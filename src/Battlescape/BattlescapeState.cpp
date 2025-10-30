@@ -159,9 +159,10 @@ BattlescapeState::BattlescapeState() :
 	_btnHelp = new BattlescapeButton(32, 16, x + 208, y + 16);
 	_btnEndTurn = new BattlescapeButton(32, 16, x + 240, y);
 	_btnAbort = new BattlescapeButton(32, 16, x + 240, y + 16);
-	_btnStats = new InteractiveSurface(164, 23, x + 107, y + 33);
+	_btnStats = new InteractiveSurface(132, 23, x + 107, y + 33); // was (164, 23, x + 107, y + 33);
 	_btnReserveNone = new BattlescapeButton(17, 11, x + 60, y + 33);
 	_btnReserveSnap = new BattlescapeButton(17, 11, x + 78, y + 33);
+	_btnReserveAkimbo = new BattlescapeButton(22, 8, x + 245, y + 34); // Akimbo reserve button under abort mission
 	_btnReserveAimed = new BattlescapeButton(17, 11, x + 60, y + 45);
 	_btnReserveAuto = new BattlescapeButton(17, 11, x + 78, y + 45);
 	_btnReserveKneel = new BattlescapeButton(10, 23, x + 96, y + 33);
@@ -288,6 +289,12 @@ BattlescapeState::BattlescapeState() :
 		Surface *tftdIcons = _game->getMod()->getSurface("TFTDReserve");
 		tftdIcons->blitNShade(icons, 48, 176);
 	}
+	// Add in custom reserve akimbo button
+	if (_game->getMod()->getSurface("akimboReserveIco", false))
+	{
+		Surface *tftdIcons = _game->getMod()->getSurface("akimboReserveIco");
+		tftdIcons->blitNShade(icons, 245, 178);
+	}
 
 	// there is some cropping going on here, because the icons image is 320x200 while we only need the bottom of it.
 	auto crop = icons->getCrop();
@@ -356,6 +363,7 @@ BattlescapeState::BattlescapeState() :
 	}
 	add(_btnReserveNone, "buttonReserveNone", "battlescape", _icons);
 	add(_btnReserveSnap, "buttonReserveSnap", "battlescape", _icons);
+	add(_btnReserveAkimbo, "buttonReserveAkimbo", "battlescape", _icons);
 	add(_btnReserveAimed, "buttonReserveAimed", "battlescape", _icons);
 	add(_btnReserveAuto, "buttonReserveAuto", "battlescape", _icons);
 	add(_btnReserveKneel, "buttonReserveKneel", "battlescape", _icons);
@@ -577,6 +585,12 @@ BattlescapeState::BattlescapeState() :
 	_btnReserveSnap->onMouseIn((ActionHandler)&BattlescapeState::txtTooltipIn);
 	_btnReserveSnap->onMouseOut((ActionHandler)&BattlescapeState::txtTooltipOut);
 
+	_btnReserveAkimbo->onMouseClick((ActionHandler)&BattlescapeState::btnReserveClick);
+	_btnReserveAkimbo->onKeyboardPress((ActionHandler)&BattlescapeState::btnReserveClick, Options::keyBattleReserveAkimbo);
+	_btnReserveAkimbo->setTooltip("STR_RESERVE_TIME_UNITS_FOR_AKIMBO_SHOT");
+	_btnReserveAkimbo->onMouseIn((ActionHandler)&BattlescapeState::txtTooltipIn);
+	_btnReserveAkimbo->onMouseOut((ActionHandler)&BattlescapeState::txtTooltipOut);
+
 	_btnReserveAimed->onMouseClick((ActionHandler)&BattlescapeState::btnReserveClick);
 	_btnReserveAimed->onKeyboardPress((ActionHandler)&BattlescapeState::btnReserveClick, Options::keyBattleReserveAimed);
 	_btnReserveAimed->setTooltip("STR_RESERVE_TIME_UNITS_FOR_AIMED_SHOT");
@@ -701,6 +715,7 @@ BattlescapeState::BattlescapeState() :
 
 	_btnReserveNone->setGroup(&_reserve);
 	_btnReserveSnap->setGroup(&_reserve);
+	_btnReserveAkimbo->setGroup(&_reserve);
 	_btnReserveAimed->setGroup(&_reserve);
 	_btnReserveAuto->setGroup(&_reserve);
 
@@ -809,6 +824,9 @@ void BattlescapeState::init()
 	case BA_SNAPSHOT:
 		_reserve = _btnReserveSnap;
 		break;
+	case BA_AKIMBOSHOT:
+		_reserve = _btnReserveAkimbo;
+		break;
 	case BA_AIMEDSHOT:
 		_reserve = _btnReserveAimed;
 		break;
@@ -846,6 +864,7 @@ void BattlescapeState::init()
 		_firstInit = false;
 		_btnReserveNone->setGroup(&_reserve);
 		_btnReserveSnap->setGroup(&_reserve);
+		_btnReserveAkimbo->setGroup(&_reserve);
 		_btnReserveAimed->setGroup(&_reserve);
 		_btnReserveAuto->setGroup(&_reserve);
 	}
@@ -1926,6 +1945,8 @@ void BattlescapeState::btnReserveClick(Action *action)
 			_battleGame->setTUReserved(BA_AIMEDSHOT);
 		else if (_reserve == _btnReserveAuto)
 			_battleGame->setTUReserved(BA_AUTOSHOT);
+		else if (_reserve == _btnReserveAkimbo)
+			_battleGame->setTUReserved(BA_AKIMBOSHOT);
 
 		// update any path preview
 		if (_battleGame->getPathfinding()->isPathPreviewed())

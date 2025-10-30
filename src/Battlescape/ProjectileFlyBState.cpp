@@ -135,6 +135,7 @@ void ProjectileFlyBState::init()
 	if (isPlayer) _parent->getMap()->resetObstacles();
 	switch (_action.type)
 	{
+	case BA_AKIMBOSHOT:
 	case BA_SNAPSHOT:
 	case BA_AIMEDSHOT:
 	case BA_AUTOSHOT:
@@ -404,6 +405,9 @@ void ProjectileFlyBState::init()
 bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
+	++_action.akimboShotCounter;
+	if (_action.akimboShotCounter == _action.weapon->getRules()->getConfigAuto()->shots)
+		_action.actor->getOpositeHandWeapon();
 
 	// Special handling for "spray" auto attack, get target positions from the action's waypoints, starting from the back
 	if (_action.sprayTargeting)
@@ -594,7 +598,7 @@ void ProjectileFlyBState::deinit()
 void ProjectileFlyBState::think()
 {
 	/// checks if a weapon has any more shots to fire.
-	auto noMoreShotsToShoot = [this]() { return !_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->getAmmoForAction(_action.type); };
+	auto noMoreShotsToShoot = [this]() { return !_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter) || !_action.weapon->getAmmoForAction(_action.type); };
 
 	_parent->getSave()->getBattleState()->clearMouseScrollingState();
 	/* TODO refactoring : store the projectile in this state, instead of getting it from the map each time? */
@@ -603,7 +607,7 @@ void ProjectileFlyBState::think()
 		bool hasFloor = _action.actor->haveNoFloorBelow() == false;
 		bool unitCanFly = _action.actor->getMovementType() == MT_FLY;
 
-		if (_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter)
+		if ((_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || _action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter))
 			&& !_action.actor->isOut()
 			&& _ammo->getAmmoQuantity() != 0
 			&& (hasFloor || unitCanFly))
@@ -852,6 +856,7 @@ void ProjectileFlyBState::cancel()
 	{
 		// stop autoshots when battle auto-ends
 		_action.autoShotCounter = 1000;
+		_action.akimboShotCounter = 1000;
 
 		// Rationale: if there are any fatally wounded soldiers
 		// the game still allows the player to resume playing the current turn (and heal them)

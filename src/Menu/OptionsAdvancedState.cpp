@@ -513,6 +513,11 @@ void OptionsAdvancedState::lstOptionsClick(Action *action)
 			min = 0;
 			max = 20;
 		}
+		else if (i == &Options::moraleAttackSuccessNotify)
+		{
+			min = 0;
+			max = 2;
+		}
 
 		if (*i < min)
 		{

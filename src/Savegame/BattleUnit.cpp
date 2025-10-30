@@ -2067,7 +2067,7 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 			std::get<arg_attackerTurnsLeftSpottedForSnipers>(args.data) = attack.attacker->getTurnsLeftSpottedForSnipersByFaction(getFaction());
 
 			if (getFaction() != attack.attacker->getFaction() &&
-				(attack.type == BA_AIMEDSHOT || attack.type == BA_SNAPSHOT || attack.type == BA_AUTOSHOT) &&
+				(attack.type == BA_AIMEDSHOT || attack.type == BA_SNAPSHOT || attack.type == BA_AKIMBOSHOT || attack.type == BA_AUTOSHOT) &&
 				attack.damage_item != nullptr &&
 				(relative == Position(0,0,0) || (attack.damage_item->getRules()->getExplosionRadius(attack) == 0)))
 			{
@@ -2373,6 +2373,10 @@ RuleItemUseCost BattleUnit::getActionTUs(BattleActionType actionType, const Rule
 			case BA_SNAPSHOT:
 				flat = item->getFlatSnap();
 				cost = item->getCostSnap();
+				break;
+			case BA_AKIMBOSHOT:
+				flat = item->getFlatAkimbo();
+				cost = item->getCostAkimbo();
 				break;
 			case BA_HIT:
 				flat = item->getFlatMelee();
@@ -2737,6 +2741,10 @@ int BattleUnit::getFiringAccuracy(BattleActionAttack::ReadOnly attack, const Mod
 	if (actionType == BA_SNAPSHOT)
 	{
 		result = item->getRules()->getAccuracyMultiplier(attack) * item->getRules()->getAccuracySnap() / 100;
+	}
+	else if (actionType == BA_AKIMBOSHOT)
+	{
+		result = item->getRules()->getAccuracyMultiplier(attack) * item->getRules()->getAccuracyAkimbo() / 100;
 	}
 	else if (actionType == BA_AIMEDSHOT || actionType == BA_LAUNCH)
 	{
@@ -4004,6 +4012,21 @@ BattleItem *BattleUnit::getLeftHandWeapon() const
 		}
 	}
 	return nullptr;
+}
+/**
+ *  Gets the item from inactive hand.
+ * @return Item in inactive hand. Needs for Akimbo operation possibility
+ */
+
+BattleItem* BattleUnit::getOpositeHandWeapon() const
+{
+	BattleItem* activeHand = const_cast<BattleItem*>(getActiveHand(getLeftHandWeapon(), getRightHandWeapon())); // thanks to Kever
+	if (activeHand == getLeftHandWeapon()) {
+		return getRightHandWeapon();
+	}
+	else if (activeHand == getRightHandWeapon()) {
+		return getLeftHandWeapon();
+	}
 }
 
 /**
@@ -6290,7 +6313,8 @@ void BattleUnit::checkForReactivation(const SavedBattleGame* battle)
 	{
 		BattleActionCost costAuto(BA_AUTOSHOT, this, weapon);
 		BattleActionCost costSnap(BA_SNAPSHOT, this, weapon);
-		BattleActionCost costAimed(BA_AIMEDSHOT, this, weapon);
+		BattleActionCost costAkimbo(BA_AKIMBOSHOT, this, weapon); // need recheck ?
+		BattleActionCost costAimed(BA_AIMEDSHOT, this, weapon); 
 		BattleActionCost costHit(BA_HIT, this, weapon);
 		BattleActionCost costThrow(BA_THROW, this, weapon);
 		if (costSnap.haveTU())
@@ -7477,6 +7501,7 @@ void battleActionImpl(BindBase& b)
 	b.addCustomConst("battle_action_aimshoot", BA_AIMEDSHOT); //TODO: fix name, it require some new logic in script to allow old typo for backward compatiblity
 	b.addCustomConst("battle_action_autoshoot", BA_AUTOSHOT);
 	b.addCustomConst("battle_action_snapshot", BA_SNAPSHOT);
+	b.addCustomConst("battle_action_akimboshot", BA_AKIMBOSHOT);
 	b.addCustomConst("battle_action_walk", BA_WALK);
 	b.addCustomConst("battle_action_hit", BA_HIT);
 	b.addCustomConst("battle_action_throw", BA_THROW);
