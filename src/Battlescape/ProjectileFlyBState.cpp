@@ -406,8 +406,6 @@ bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
 	++_action.akimboShotCounter;
-	if (_action.akimboShotCounter == _action.weapon->getRules()->getConfigAuto()->shots)
-		_action.actor->getOpositeHandWeapon();
 
 	// Special handling for "spray" auto attack, get target positions from the action's waypoints, starting from the back
 	if (_action.sprayTargeting)

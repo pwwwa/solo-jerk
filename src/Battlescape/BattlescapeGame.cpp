@@ -1844,6 +1844,15 @@ void BattlescapeGame::primaryAction(Position pos)
 				// Populate the action's waypoints with the positions we want to fire at
 				// Start from the last shot and move to the first, since we'll be using the last element first and then pop_back()
 				int numberOfShots = _currentAction.weapon->getRules()->getConfigAuto()->shots;
+				if (_currentAction.type == BA_AKIMBOSHOT) {	// avoid endless loop causes by reverse() funcion for hand`s weapon shotNumber difference
+					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1) {
+						numberOfShots = 2;
+					}else if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots >= _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots) {
+						numberOfShots = _currentAction.weapon->getRules()->getConfigAkimbo()->shots;
+					} else {
+						numberOfShots = _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots;
+					}
+				}
 				int numberOfWaypoints = _currentAction.waypoints.size();
 				_currentAction.waypoints.clear();
 				for (int i = numberOfShots - 1; i > 0; --i)
@@ -1871,6 +1880,7 @@ void BattlescapeGame::primaryAction(Position pos)
 				statePushFront(new UnitTurnBState(this, _currentAction));
 				if (_currentAction.type == BA_AKIMBOSHOT) // AKIMBO SHOOTING FROM OPOSITE HAND DURING SPREAD SEQUENCE
 				{
+					_currentAction.waypoints.reverse(); // Solution for oposite hand shoot
 					_currentAction.target = pos;
 					BattleItem* deopWeapon = _currentAction.weapon;
 					_currentAction.cameraPosition = getMap()->getCamera()->getMapOffset();
@@ -1893,7 +1903,7 @@ void BattlescapeGame::primaryAction(Position pos)
 			_currentAction.weapon->getRules()->getSprayWaypoints() > 0 &&
 			_save->isCtrlPressed(true) &&
 			_save->isShiftPressed(true) &&
-			_currentAction.waypoints.empty()) // Starts the spray autoshot targeting
+			_currentAction.waypoints.empty()) // Starts the spray autoshot or akimboshot targeting
 		{
 			_currentAction.sprayTargeting = true;
 			_currentAction.waypoints.push_back(pos);
@@ -2000,7 +2010,8 @@ void BattlescapeGame::primaryAction(Position pos)
 			getMap()->getWaypoints()->clear();
 			getMap()->getWaypoints()->push_back(pos);
 		} /*AKIMBO SECTION*/
-		else if	(_currentAction.type == BA_AKIMBOSHOT){
+		else if (_currentAction.type == BA_AKIMBOSHOT || (_currentAction.type == BA_AKIMBOSHOT && _currentAction.actor->getFaction() != getSave()->getSide()))
+		{
 			int tuAkimboM = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.weapon).Time;
 			int tuAkimboOp = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time;
 
