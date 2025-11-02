@@ -1724,7 +1724,7 @@ bool BattlescapeGame::cancelCurrentAction(bool bForce)
 				}
 				return true;
 			}
-			else if ((_currentAction.type == BA_AUTOSHOT || _currentAction.type == BA_AUTOSHOT) && _currentAction.sprayTargeting && !_currentAction.waypoints.empty())
+			else if ((_currentAction.type == BA_AUTOSHOT || _currentAction.type == BA_AKIMBOSHOT) && _currentAction.sprayTargeting && !_currentAction.waypoints.empty())
 			{
 				_currentAction.waypoints.pop_back();
 				if (!getMap()->getWaypoints()->empty())
@@ -1844,8 +1844,8 @@ void BattlescapeGame::primaryAction(Position pos)
 				// Populate the action's waypoints with the positions we want to fire at
 				// Start from the last shot and move to the first, since we'll be using the last element first and then pop_back()
 				int numberOfShots = _currentAction.weapon->getRules()->getConfigAuto()->shots;
-				if (_currentAction.type == BA_AKIMBOSHOT) {	// avoid endless loop causes by reverse() funcion for hand`s weapon shotNumber difference
-					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1) {
+				if (_currentAction.type == BA_AKIMBOSHOT) {	// avoid endless loop causes by .reverse() method for weapons (in both hands) shotNumber difference
+					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == 1 && _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1) {
 						numberOfShots = 2;
 					}else if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots >= _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots) {
 						numberOfShots = _currentAction.weapon->getRules()->getConfigAkimbo()->shots;
@@ -1880,12 +1880,12 @@ void BattlescapeGame::primaryAction(Position pos)
 				statePushFront(new UnitTurnBState(this, _currentAction));
 				if (_currentAction.type == BA_AKIMBOSHOT) // AKIMBO SHOOTING FROM OPOSITE HAND DURING SPREAD SEQUENCE
 				{
-					_currentAction.waypoints.reverse(); // Solution for oposite hand shoot
 					_currentAction.target = pos;
 					BattleItem* deopWeapon = _currentAction.weapon;
 					_currentAction.cameraPosition = getMap()->getCamera()->getMapOffset();
 					_currentAction.weapon = _currentAction.actor->getOpositeHandWeapon();
 					_currentAction.updateTU(); // need to refresh Weapon cost for correct TU usage for current hand weapon
+					_currentAction.waypoints.reverse(); // Solution for oposite hand shoot
 					_states.push_back(new ProjectileFlyBState(this, _currentAction));
 					statePushFront(new UnitTurnBState(this, _currentAction)); // first of all turn towards the target, overwise possible to catch exeption to clip size null pointer
 					if (deopWeapon)	_currentAction.weapon = deopWeapon; // checking weapon for null and return from oposite to origin hand weapon after shooting serie
@@ -2010,7 +2010,7 @@ void BattlescapeGame::primaryAction(Position pos)
 			getMap()->getWaypoints()->clear();
 			getMap()->getWaypoints()->push_back(pos);
 		} /*AKIMBO SECTION*/
-		else if (_currentAction.type == BA_AKIMBOSHOT || (_currentAction.type == BA_AKIMBOSHOT && _currentAction.actor->getFaction() != getSave()->getSide()))
+		else if (_currentAction.type == BA_AKIMBOSHOT)
 		{
 			int tuAkimboM = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.weapon).Time;
 			int tuAkimboOp = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time;
@@ -2032,7 +2032,6 @@ void BattlescapeGame::primaryAction(Position pos)
 			_currentAction.updateTU(); // need to refresh Weapon cost for correct TU usage for current hand weapon in next iteration
 			_states.push_back(new ProjectileFlyBState(this, _currentAction));
 			statePushFront(new UnitTurnBState(this, _currentAction)); // first of all turn towards the target
-			_currentAction.target = pos;
 			BattleItem* deopWeapon = _currentAction.weapon;
 			_currentAction.cameraPosition = getMap()->getCamera()->getMapOffset();
 			_currentAction.weapon = _currentAction.actor->getOpositeHandWeapon();
