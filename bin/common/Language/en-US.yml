@@ -549,3 +549,6 @@ en-US:
   STR_DYNAMIC_AGGRESSION_DESC: "The AI will adjust it's aggressiveness based on it's morale, how many units it has in an area and whether your units are panicking or nearby."
   STR_BATTLETHROWNSPEED: "Thrown Speed"
   STR_BATTLETHROWNSPEED_DESC: "Changes the speed of thrown items: {ALT}0>{ALT} Same as Fire Speed {NEWLINE}{ALT}1-20>{ALT} Equivalent value to \"Fire Speed\" slider in the menu"
+  #New
+  STR_MORALE_ATTACK_SUCCESS_NOTIFY: "Morale Attack Success Notification"
+  STR_MORALE_ATTACK_SUCCESS_NOTIFY_DESC: "Notify player about morale attack success.{NEWLINE}0 - No notify (Vanilla), 1 - Flash message, 2 - Info Box."

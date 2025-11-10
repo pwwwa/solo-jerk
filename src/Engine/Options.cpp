@@ -554,6 +554,7 @@ void createControlsOXCE()
 	_info.push_back(OptionInfo(OPTION_OXCE, "keyBattleActionItem3", &keyBattleActionItem3, SDLK_3, "STR_ACTION_ITEM_3", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "keyBattleActionItem4", &keyBattleActionItem4, SDLK_4, "STR_ACTION_ITEM_4", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "keyBattleActionItem5", &keyBattleActionItem5, SDLK_5, "STR_ACTION_ITEM_5", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OXCE, "keyBattleActionItem6", &keyBattleActionItem6, SDLK_6, "STR_ACTION_ITEM_6", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "keyNightVisionToggle", &keyNightVisionToggle, SDLK_SCROLLOCK, "STR_TOGGLE_NIGHT_VISION", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "keyNightVisionHold", &keyNightVisionHold, SDLK_SPACE, "STR_HOLD_NIGHT_VISION", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "keySelectMusicTrack", &keySelectMusicTrack, SDLK_END, "STR_SELECT_MUSIC_TRACK", "STR_BATTLESCAPE"));

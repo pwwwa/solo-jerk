@@ -67,6 +67,7 @@ SkillMenuState::SkillMenuState(BattleAction *action, int x, int y) : ActionMenuS
 	int id = 0;
 
 	std::vector<SDLKey> hotkeys = {
+		Options::keyBattleActionItem6,
 		Options::keyBattleActionItem5,
 		Options::keyBattleActionItem4,
 		Options::keyBattleActionItem3,

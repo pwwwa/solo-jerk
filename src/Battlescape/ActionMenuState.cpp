@@ -118,7 +118,7 @@ ActionMenuState::ActionMenuState(BattleAction *action, int x, int y) : _action(a
 	{
 		bool bLeftAkimbo = false, bRightAkimbo = false;
 		if (_action->actor->getLeftHandWeapon())
-			bLeftAkimbo = _action->actor->getLeftHandWeapon()->getRules()->getCostAkimbo().Time; // was isPistol()
+			bLeftAkimbo = _action->actor->getLeftHandWeapon()->getRules()->getCostAkimbo().Time;
 		if (_action->actor->getRightHandWeapon())
 			bRightAkimbo = _action->actor->getRightHandWeapon()->getRules()->getCostAkimbo().Time;
 
@@ -232,8 +232,8 @@ void ActionMenuState::addItem(BattleActionType ba, const std::string &name, int 
 	std::string s1, s2;
 	int acc = BattleUnit::getFiringAccuracy(BattleActionAttack::GetBeforeShoot(ba, _action->actor, _action->weapon), _game->getMod());
 	int tu = _action->actor->getActionTUs(ba, _action->weapon).Time;
-	int tu1 = _action->actor->getActionTUs(ba, _action->actor->getOpositeHandWeapon()).Time;
-	if (ba == BA_AKIMBOSHOT) tu += tu1;
+	int tuOp = _action->actor->getActionTUs(ba, _action->actor->getOpositeHandWeapon()).Time;
+	if (ba == BA_AKIMBOSHOT) tu += tuOp;
 
 	if (ba == BA_THROW || ba == BA_AIMEDSHOT || ba == BA_SNAPSHOT || ba == BA_AKIMBOSHOT || ba == BA_AUTOSHOT || ba == BA_LAUNCH || ba == BA_HIT)
 		s1 = tr("STR_ACCURACY_SHORT").arg(Unicode::formatPercentage(acc));
@@ -267,7 +267,8 @@ void ActionMenuState::handle(Action *action)
 				key != Options::keyBattleActionItem2 &&
 				key != Options::keyBattleActionItem3 &&
 				key != Options::keyBattleActionItem4 &&
-				key != Options::keyBattleActionItem5)
+				key != Options::keyBattleActionItem5 && 
+				key != Options::keyBattleActionItem6)
 			{
 				_game->popState();
 			}

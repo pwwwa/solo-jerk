@@ -4021,11 +4021,17 @@ BattleItem *BattleUnit::getLeftHandWeapon() const
 BattleItem* BattleUnit::getOpositeHandWeapon() const
 {
 	BattleItem* activeHand = const_cast<BattleItem*>(getActiveHand(getLeftHandWeapon(), getRightHandWeapon())); // thanks to Kever
-	if (activeHand == getLeftHandWeapon()) {
+	if (activeHand == getLeftHandWeapon())
+	{
 		return getRightHandWeapon();
 	}
-	else if (activeHand == getRightHandWeapon()) {
+	else if (activeHand == getRightHandWeapon())
+	{
 		return getLeftHandWeapon();
+	}
+	else
+	{
+		return nullptr;
 	}
 }
 

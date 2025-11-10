@@ -1470,7 +1470,7 @@ bool BattlescapeGame::checkReservedTU(BattleUnit *bu, int tu, int energy, bool j
 		{
 		case BA_AKIMBOSHOT:
 			cost.Time += (_currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon())).Time + (bu->getBaseStats()->tu / 3);
-			break; // 33%
+			break; // ?%
 		case BA_SNAPSHOT: cost.Time += (bu->getBaseStats()->tu / 3); break; // 33%
 		case BA_AUTOSHOT: cost.Time += ((bu->getBaseStats()->tu / 5)*2); break; // 40%
 		case BA_AIMEDSHOT: cost.Time += (bu->getBaseStats()->tu / 2); break; // 50%
@@ -1479,21 +1479,9 @@ bool BattlescapeGame::checkReservedTU(BattleUnit *bu, int tu, int energy, bool j
 		return cost.Time <= 0 || cost.haveTU();
 	}
 
-
-	// reserve correct (left + right hand) TUs for akimbo reaction shot
-	if (cost.type == BA_AKIMBOSHOT) {
-		cost.updateTU();
-		int tuAkimboOp = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time;
-		cost.Time += tuAkimboOp;
-	}
-	// if the weapon has no autoshot, reserve TUs for akimboshot
+	cost.updateTU();
+	// if the weapon has no autoshot, reserve TUs for snapshot
 	if (cost.Time == 0 && cost.type == BA_AUTOSHOT)
-	{
-		cost.type = BA_AKIMBOSHOT;
-		cost.updateTU();
-	}
-	// if the weapon has no akimboshot, reserve TUs for snapshot
-	if (cost.Time == 0 && cost.type == BA_AKIMBOSHOT)
 	{
 		cost.type = BA_SNAPSHOT;
 		cost.updateTU();
@@ -1504,6 +1492,21 @@ bool BattlescapeGame::checkReservedTU(BattleUnit *bu, int tu, int energy, bool j
 		cost.type = BA_AIMEDSHOT;
 		cost.updateTU();
 	}
+	// reserve correct (left + right hand) TUs for akimbo reaction shot
+	if (cost.type == BA_AKIMBOSHOT)
+	{
+		cost.updateTU();
+		int tuAkimboOp = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time;
+		if (tuAkimboOp && tuAkimboOp > 0)
+		{
+			cost.Time += tuAkimboOp;
+		}
+		else
+		{
+			cost.Time = 0;
+		}
+	}
+
 	const int tuKneel = (_save->getKneelReserved() && !bu->isKneeled()  && bu->getArmor()->allowsKneeling(bu->getType() == "SOLDIER")) ? bu->getKneelDownCost() : 0;
 	// no aimed shot available? revert to none.
 	if (cost.Time == 0 && cost.type == BA_AIMEDSHOT)
@@ -1844,13 +1847,16 @@ void BattlescapeGame::primaryAction(Position pos)
 				// Populate the action's waypoints with the positions we want to fire at
 				// Start from the last shot and move to the first, since we'll be using the last element first and then pop_back()
 				int numberOfShots = _currentAction.weapon->getRules()->getConfigAuto()->shots;
-				if (_currentAction.type == BA_AKIMBOSHOT) {	// avoid endless loop causes by .reverse() method for weapons (in both hands) shotNumber difference
-					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == 1 && _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1) {
+				if (_currentAction.type == BA_AKIMBOSHOT)
+				{	// avoid endless loop causes by .reverse() method for weapons (in both hands) shotNumber difference
+					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == 1 && _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1)
+					{
 						numberOfShots = 2;
-					}else if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots >= _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots) {
-						numberOfShots = _currentAction.weapon->getRules()->getConfigAkimbo()->shots;
-					} else {
-						numberOfShots = _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots;
+					}
+					 else
+					{
+						numberOfShots = _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots
+							+ _currentAction.weapon->getRules()->getConfigAkimbo()->shots;
 					}
 				}
 				int numberOfWaypoints = _currentAction.waypoints.size();
@@ -1878,6 +1884,7 @@ void BattlescapeGame::primaryAction(Position pos)
 				_currentAction.cameraPosition = getMap()->getCamera()->getMapOffset();
 				_states.push_back(new ProjectileFlyBState(this, _currentAction));
 				statePushFront(new UnitTurnBState(this, _currentAction));
+				/*
 				if (_currentAction.type == BA_AKIMBOSHOT) // AKIMBO SHOOTING FROM OPOSITE HAND DURING SPREAD SEQUENCE
 				{
 					_currentAction.target = pos;
@@ -1890,6 +1897,7 @@ void BattlescapeGame::primaryAction(Position pos)
 					statePushFront(new UnitTurnBState(this, _currentAction)); // first of all turn towards the target, overwise possible to catch exeption to clip size null pointer
 					if (deopWeapon)	_currentAction.weapon = deopWeapon; // checking weapon for null and return from oposite to origin hand weapon after shooting serie
 				}
+				*/
 				_currentAction.sprayTargeting = false;
 				_currentAction.waypoints.clear();
 			}
@@ -2009,13 +2017,15 @@ void BattlescapeGame::primaryAction(Position pos)
 			_currentAction.waypoints.push_back(pos);
 			getMap()->getWaypoints()->clear();
 			getMap()->getWaypoints()->push_back(pos);
-		} /*AKIMBO SECTION*/
+		}
+		/*AKIMBO SECTION*/ /*
 		else if (_currentAction.type == BA_AKIMBOSHOT)
 		{
 			int tuAkimboM = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.weapon).Time;
 			int tuAkimboOp = _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time;
 
-			if ((_currentAction.actor->getTimeUnits() < tuAkimboM + tuAkimboOp) || !tuAkimboM || !tuAkimboOp) {
+			if ((_currentAction.actor->getTimeUnits() < tuAkimboM + tuAkimboOp) || !tuAkimboM || !tuAkimboOp)
+			{
 				_parentState->warning("STR_NOT_ENOUGH_TIME_UNITS");
 				_parentState->getBattleGame()->popState();
 				return;
@@ -2023,10 +2033,12 @@ void BattlescapeGame::primaryAction(Position pos)
 			_currentAction.target = pos;
 			getMap()->setCursorType(CT_NONE);
 
-			if (Options::battleConfirmFireMode) {
+			if (Options::battleConfirmFireMode)
+			{
 				_currentAction.waypoints.clear();
 				getMap()->getWaypoints()->clear();
 			}
+
 			_parentState->getGame()->getCursor()->setVisible(false);
 			_currentAction.cameraPosition = getMap()->getCamera()->getMapOffset();
 			_currentAction.updateTU(); // need to refresh Weapon cost for correct TU usage for current hand weapon in next iteration
@@ -2040,6 +2052,7 @@ void BattlescapeGame::primaryAction(Position pos)
 			statePushFront(new UnitTurnBState(this, _currentAction)); // first of all turn towards the target, overwise possible to catch exeption to clip size null pointer
 			if (deopWeapon) _currentAction.weapon = deopWeapon; // checking weapon for null and return from oposite to origin hand weapon after shooting serie
 		}
+*/		
 		else
 		{
 			_currentAction.target = pos;

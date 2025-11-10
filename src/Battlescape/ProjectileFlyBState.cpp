@@ -46,11 +46,11 @@ namespace OpenXcom
 /**
  * Sets up an ProjectileFlyBState.
  */
-ProjectileFlyBState::ProjectileFlyBState(BattlescapeGame *parent, BattleAction action, Position origin, int range) : BattleState(parent, action), _unit(0), _ammo(0), _origin(origin), _originVoxel(-1,-1,-1), _projectileImpact(0), _range(range), _initialized(false), _targetFloor(false)
+ProjectileFlyBState::ProjectileFlyBState(BattlescapeGame *parent, BattleAction action, Position origin, int range) : BattleState(parent, action), _unit(0), _ammo(0), _ammoOp(0), _origin(origin), _originVoxel(-1,-1,-1), _projectileImpact(0), _range(range), _initialized(false), _targetFloor(false)
 {
 }
 
-ProjectileFlyBState::ProjectileFlyBState(BattlescapeGame *parent, BattleAction action) : BattleState(parent, action), _unit(0), _ammo(0), _origin(action.actor->getPosition()), _originVoxel(-1,-1,-1), _projectileImpact(0), _range(0), _initialized(false), _targetFloor(false)
+ProjectileFlyBState::ProjectileFlyBState(BattlescapeGame *parent, BattleAction action) : BattleState(parent, action), _unit(0), _ammo(0), _ammoOp(0), _origin(action.actor->getPosition()), _originVoxel(-1,-1,-1), _projectileImpact(0), _range(0), _initialized(false), _targetFloor(false)
 {
 }
 
@@ -95,13 +95,34 @@ void ProjectileFlyBState::init()
 	_unit = _action.actor;
 
 	bool reactionShoot = _unit->getFaction() != _parent->getSave()->getSide();
-	if (_action.type != BA_THROW)
+	if ((_action.type != BA_THROW) && (_action.type != BA_AKIMBOSHOT))
 	{
 		_ammo = _action.weapon->getAmmoForAction(_action.type, reactionShoot ? nullptr : &_action.result);
 		if (!_ammo)
 		{
 			_parent->popState();
 			return;
+		}
+	}
+
+	if (_action.type == BA_AKIMBOSHOT)
+	{
+		_ammo = _action.weapon->getAmmoForAction(_action.type, reactionShoot ? nullptr : &_action.result);
+		if (!_unit->getOpositeHandWeapon()) // nullptr avoidance
+		{
+			_parent->popState();
+			return;
+		}
+		else
+		{
+			_ammoOp = _unit->getOpositeHandWeapon()->getAmmoForAction(_action.type, reactionShoot ? nullptr : &_action.result);
+			{
+				if (!_ammo || !_ammoOp)
+				{
+					_parent->popState();
+					return;
+				}
+			}
 		}
 	}
 
@@ -135,12 +156,28 @@ void ProjectileFlyBState::init()
 	if (isPlayer) _parent->getMap()->resetObstacles();
 	switch (_action.type)
 	{
-	case BA_AKIMBOSHOT:
 	case BA_SNAPSHOT:
 	case BA_AIMEDSHOT:
 	case BA_AUTOSHOT:
 	case BA_LAUNCH:
 		if (weapon->getRules()->isOutOfRange(distanceSq))
+		{
+			// out of range
+			_action.result = "STR_OUT_OF_RANGE";
+			_parent->popState();
+			return;
+		}
+		break;
+	case BA_AKIMBOSHOT:
+		if ((_action.actor->getTimeUnits() < (_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time + _action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time) && _action.akimboShotCounter == 0)
+			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time
+			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time || !_ammoOp)
+		{
+			_action.result = "STR_NOT_ENOUGH_TIME_UNITS";
+			_parent->popState();
+			return;
+		}
+		else if (weapon->getRules()->isOutOfRange(distanceSq))
 		{
 			// out of range
 			_action.result = "STR_OUT_OF_RANGE";
@@ -405,7 +442,43 @@ void ProjectileFlyBState::init()
 bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
-	++_action.akimboShotCounter;
+	
+	BattleItem* deopWeapon = _action.weapon;
+
+	if (_action.type == BA_AKIMBOSHOT)
+	{
+		++_action.akimboShotCounter;
+// Log(LOG_DEBUG) << _action.akimboShotCounter;
+		if (_ammo->getAmmoQuantity() == 0 && _ammoOp->getAmmoQuantity() > 0 && (_action.akimboShotCounter <= _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
+			{
+			_action.akimboShotCounter = (_action.weapon->getActionConf(BA_AKIMBOSHOT)->shots + 1);
+// Log(LOG_DEBUG) << "Need to switch hand!";
+			}
+		else if (_ammoOp->getAmmoQuantity() == 0)
+		{
+			_action.akimboShotCounter = 1000;
+		}
+
+		if ((_action.akimboShotCounter > _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots) && _action.weapon == deopWeapon)
+		{
+			_action.weapon = _action.actor->getOpositeHandWeapon();
+			_action.updateTU();
+			_action.spendTU();
+			_ammo = _ammoOp;
+		}
+		if (_action.sprayTargeting && _parent->getSave()->isAltPressed())
+		{
+			_action.waypoints.reverse();
+		}
+	}
+
+	/*** Further TODO idea for switching hands per 1 shoot action
+	*
+	if (_action.type == BA_AKIMBOSHOT && _action.akimboShotCounter % 2 == 0)
+		_action.weapon = _action.actor->getOpositeHandWeapon();
+
+	*
+	**/
 
 	// Special handling for "spray" auto attack, get target positions from the action's waypoints, starting from the back
 	if (_action.sprayTargeting)
@@ -596,7 +669,9 @@ void ProjectileFlyBState::deinit()
 void ProjectileFlyBState::think()
 {
 	/// checks if a weapon has any more shots to fire.
-	auto noMoreShotsToShoot = [this]() { return !_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter) || !_action.weapon->getAmmoForAction(_action.type); };
+    auto noMoreShotsToShoot = [this]() { return (!_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter)
+		|| !_action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter)
+		|| !_action.weapon->getAmmoForAction(_action.type)); };
 
 	_parent->getSave()->getBattleState()->clearMouseScrollingState();
 	/* TODO refactoring : store the projectile in this state, instead of getting it from the map each time? */
@@ -605,10 +680,20 @@ void ProjectileFlyBState::think()
 		bool hasFloor = _action.actor->haveNoFloorBelow() == false;
 		bool unitCanFly = _action.actor->getMovementType() == MT_FLY;
 
-		if ((_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || _action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter))
-			&& !_action.actor->isOut()
-			&& _ammo->getAmmoQuantity() != 0
+		if (_action.type == BA_AKIMBOSHOT
+			&& _action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter)
+			&& !_action.actor->isOut() 
+			&& (_ammo->getAmmoQuantity() != 0 || /* _action.actor->getOpositeHandWeapon()->getAmmoForAction(_action.type)*/ _ammoOp->getAmmoQuantity() != 0)
 			&& (hasFloor || unitCanFly))
+		{
+			createNewProjectile();
+			if (_action.cameraPosition.z != -1)
+			{
+				_parent->getMap()->getCamera()->setMapOffset(_action.cameraPosition);
+				_parent->getMap()->invalidate();
+			}
+		} else if	(_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) && !_action.actor->isOut() 
+			 && _ammo->getAmmoQuantity() != 0 && (hasFloor || unitCanFly))
 		{
 			createNewProjectile();
 			if (_action.cameraPosition.z != -1)

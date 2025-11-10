@@ -6239,7 +6239,7 @@ Position AIModule::closestPositionEnemyCouldReach(BattleUnit *enemy)
 int AIModule::maxExtenderRangeWith(BattleUnit *unit, int tus)
 {
 	BattleItem *weapon = unit->getMainHandWeapon();
-	if (weapon == NULL)
+	if (!weapon)
 		return 0;
 	if (!Options::battleUFOExtenderAccuracy)
 	{
