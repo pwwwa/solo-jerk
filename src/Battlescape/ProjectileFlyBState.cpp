@@ -108,7 +108,7 @@ void ProjectileFlyBState::init()
 	if (_action.type == BA_AKIMBOSHOT)
 	{
 		_ammo = _action.weapon->getAmmoForAction(_action.type, reactionShoot ? nullptr : &_action.result);
-		if (!_unit->getOpositeHandWeapon()) // nullptr avoidance
+		if (!_unit->getOpositeHandWeapon())
 		{
 			_parent->popState();
 			return;
@@ -169,7 +169,7 @@ void ProjectileFlyBState::init()
 		}
 		break;
 	case BA_AKIMBOSHOT:
-		if ((_action.actor->getTimeUnits() < (_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time + _action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time) && _action.akimboShotCounter == 0)
+		if ((_action.actor->getTimeUnits() < (_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time + _action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time) && _action.autoShotCounter == 0)
 			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time
 			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time || !_ammoOp)
 		{
@@ -443,42 +443,48 @@ bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
 	
-	BattleItem* deopWeapon = _action.weapon;
+	//Log(LOG_DEBUG) << _action.autoShotCounter;
 
 	if (_action.type == BA_AKIMBOSHOT)
 	{
-		++_action.akimboShotCounter;
-// Log(LOG_DEBUG) << _action.akimboShotCounter;
-		if (_ammo->getAmmoQuantity() == 0 && _ammoOp->getAmmoQuantity() > 0 && (_action.akimboShotCounter <= _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
-			{
-			_action.akimboShotCounter = (_action.weapon->getActionConf(BA_AKIMBOSHOT)->shots + 1);
-// Log(LOG_DEBUG) << "Need to switch hand!";
-			}
-		else if (_ammoOp->getAmmoQuantity() == 0)
+		BattleItem* deopWeapon = _action.weapon;
+		/**
+		Log(LOG_DEBUG) << "Akimbo counter: ? " << _action.autoShotCounter;
+		Log(LOG_DEBUG) << "weapon ? " << _action.weapon;
+		Log(LOG_DEBUG) << "Main Hand ? " << _unit->getMainHandWeapon();
+		Log(LOG_DEBUG) << "Oposite Hand ? " << _unit->getOpositeHandWeapon();
+		Log(LOG_DEBUG) << "Left Hand ? " << _unit->getLeftHandWeapon();
+		Log(LOG_DEBUG) << "Right Hand ? " << _unit->getRightHandWeapon();
+		**/
+		if (_ammo->getAmmoQuantity() == 0 && _ammoOp->getAmmoQuantity() > 0 && (_action.autoShotCounter <= _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
 		{
-			_action.akimboShotCounter = 1000;
+			_action.autoShotCounter = (_action.weapon->getActionConf(BA_AKIMBOSHOT)->shots + 1); // switch weapon if still have ammo to other weapon
+		}
+		else if (_ammoOp->getAmmoQuantity() == 0) // no ammo - stop shhoting.
+		{
+			_action.autoShotCounter = 1000;
 		}
 
-		if ((_action.akimboShotCounter > _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots) && _action.weapon == deopWeapon)
+		if ((_action.autoShotCounter > _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
 		{
 			_action.weapon = _action.actor->getOpositeHandWeapon();
-			_action.updateTU();
-			_action.spendTU();
-			_ammo = _ammoOp;
+			_ammo = _ammoOp; // wrong projectile impact fix
 		}
+
 		if (_action.sprayTargeting && _parent->getSave()->isAltPressed())
 		{
 			_action.waypoints.reverse();
 		}
+		
+		if (_action.autoShotCounter == (_action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
+		{
+			_action.weapon = _action.actor->getOpositeHandWeapon(); // forced spanding of TU from second hand weapon cost
+			_action.updateTU();
+			_action.spendTU();
+			_action.weapon = deopWeapon;
+		}
+
 	}
-
-	/*** Further TODO idea for switching hands per 1 shoot action
-	*
-	if (_action.type == BA_AKIMBOSHOT && _action.akimboShotCounter % 2 == 0)
-		_action.weapon = _action.actor->getOpositeHandWeapon();
-
-	*
-	**/
 
 	// Special handling for "spray" auto attack, get target positions from the action's waypoints, starting from the back
 	if (_action.sprayTargeting)
@@ -670,7 +676,6 @@ void ProjectileFlyBState::think()
 {
 	/// checks if a weapon has any more shots to fire.
     auto noMoreShotsToShoot = [this]() { return (!_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter)
-		|| !_action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter)
 		|| !_action.weapon->getAmmoForAction(_action.type)); };
 
 	_parent->getSave()->getBattleState()->clearMouseScrollingState();
@@ -681,9 +686,9 @@ void ProjectileFlyBState::think()
 		bool unitCanFly = _action.actor->getMovementType() == MT_FLY;
 
 		if (_action.type == BA_AKIMBOSHOT
-			&& _action.weapon->haveNextShotsForAction(_action.type, _action.akimboShotCounter)
+			&& _action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter)
 			&& !_action.actor->isOut() 
-			&& (_ammo->getAmmoQuantity() != 0 || /* _action.actor->getOpositeHandWeapon()->getAmmoForAction(_action.type)*/ _ammoOp->getAmmoQuantity() != 0)
+			&& (_ammo->getAmmoQuantity() != 0 || _ammoOp->getAmmoQuantity() != 0)
 			&& (hasFloor || unitCanFly))
 		{
 			createNewProjectile();
@@ -939,7 +944,6 @@ void ProjectileFlyBState::cancel()
 	{
 		// stop autoshots when battle auto-ends
 		_action.autoShotCounter = 1000;
-		_action.akimboShotCounter = 1000;
 
 		// Rationale: if there are any fatally wounded soldiers
 		// the game still allows the player to resume playing the current turn (and heal them)

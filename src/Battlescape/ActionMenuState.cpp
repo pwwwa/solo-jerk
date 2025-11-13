@@ -117,8 +117,10 @@ ActionMenuState::ActionMenuState(BattleAction *action, int x, int y) : _action(a
 	if (weapon->getBattleType() == BT_FIREARM)
 	{
 		bool bLeftAkimbo = false, bRightAkimbo = false;
+
 		if (_action->actor->getLeftHandWeapon())
 			bLeftAkimbo = _action->actor->getLeftHandWeapon()->getRules()->getCostAkimbo().Time;
+
 		if (_action->actor->getRightHandWeapon())
 			bRightAkimbo = _action->actor->getRightHandWeapon()->getRules()->getCostAkimbo().Time;
 

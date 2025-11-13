@@ -1847,11 +1847,13 @@ void BattlescapeGame::primaryAction(Position pos)
 				// Populate the action's waypoints with the positions we want to fire at
 				// Start from the last shot and move to the first, since we'll be using the last element first and then pop_back()
 				int numberOfShots = _currentAction.weapon->getRules()->getConfigAuto()->shots;
+
+				/** avoid error (endless loop ?) during Akimbo causing by .reverse() method for weapons (in both hands) shotNumber difference **/
 				if (_currentAction.type == BA_AKIMBOSHOT)
-				{	// avoid endless loop causes by .reverse() method for weapons (in both hands) shotNumber difference
+				{	
 					if (_currentAction.weapon->getRules()->getConfigAkimbo()->shots == 1 && _currentAction.actor->getOpositeHandWeapon()->getRules()->getConfigAkimbo()->shots == 1)
 					{
-						numberOfShots = 2;
+						numberOfShots = 2; // veird, but 1 values ignores during adding
 					}
 					 else
 					{

@@ -199,7 +199,7 @@ RuleItem::RuleItem(const std::string &type, int listOrder) :
 
 	_confAimed.range = 200;
 	_confSnap.range = 15;
-	_confAkimbo.range = 15;
+	_confAkimbo.range = 7;
 	_confAuto.range = 7;
 
 	_confAimed.cost = { 0 };

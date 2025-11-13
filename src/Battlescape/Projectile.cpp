@@ -346,7 +346,7 @@ int Projectile::calculateTrajectory(double accuracy, const Position& originVoxel
 	if (test != V_EMPTY &&
 		!_trajectory.empty() &&
 		_action.actor->getFaction() == FACTION_PLAYER &&
-		(_action.autoShotCounter == 1 || _action.akimboShotCounter == 1) &&
+		_action.autoShotCounter == 1 &&
 		(!_save->isCtrlPressed(true) || !Options::forceFire) &&
 		_save->getBattleGame()->getPanicHandled() &&
 		_action.type != BA_LAUNCH &&

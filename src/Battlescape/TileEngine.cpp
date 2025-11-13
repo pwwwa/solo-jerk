@@ -3124,15 +3124,16 @@ TileEngine::ReactionScore TileEngine::determineReactionType(BattleUnit *unit, Ba
 				return reaction;
 			}
 		}
-		if (_save->canUseWeapon(weapon, unit, false, BA_AKIMBOSHOT) && _save->canUseWeapon(unit->getOpositeHandWeapon(), unit, false, BA_AKIMBOSHOT)
-			&& unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time && unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time
+		if (_save->canUseWeapon(unit->getLeftHandWeapon(), unit, false, BA_AKIMBOSHOT) && _save->canUseWeapon(unit->getRightHandWeapon(), unit, false, BA_AKIMBOSHOT)
+			&& unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time && unit->getRightHandWeapon()->getRules()->getCostAkimbo().Time
 			&& (unit->getTimeUnits() >=
-				(unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time + unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time)))
+				(unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time + unit->getRightHandWeapon()->getRules()->getCostAkimbo().Time)))
 		{
 			// has a gun capable of akimbo shot with ammo
-			if (!weapon->getRules()->isOutOfRange(unit->distance3dToUnitSq(target)) && !unit->getOpositeHandWeapon()->getRules()->isOutOfRange(unit->distance3dToUnitSq(target))
-				&& weapon->getAmmoForAction(BA_AKIMBOSHOT) && unit->getOpositeHandWeapon()->getAmmoForAction(BA_AKIMBOSHOT)
-				&& (BattleActionCost(BA_AKIMBOSHOT, unit, weapon).haveTU() && BattleActionCost(BA_AKIMBOSHOT, unit, unit->getOpositeHandWeapon()).haveTU()))
+			if (!unit->getLeftHandWeapon()->getRules()->isOutOfRange(unit->distance3dToUnitSq(target))
+				&& !unit->getRightHandWeapon()->getRules()->isOutOfRange(unit->distance3dToUnitSq(target))
+				&& unit->getLeftHandWeapon()->getAmmoForAction(BA_AKIMBOSHOT)
+				&& unit->getRightHandWeapon()->getAmmoForAction(BA_AKIMBOSHOT))
 			{
 				setReaction(reaction, BA_AKIMBOSHOT, weapon);
 				return reaction;
