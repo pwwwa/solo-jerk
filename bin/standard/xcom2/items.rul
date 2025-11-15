@@ -225,6 +225,12 @@ items: #done
     battleType: 1
     invWidth: 1
     invHeight: 2
+    accuracyAkimbo: 35
+    tuAkimbo: 15
+    flatAkimbo: false
+    akimboShots: 1
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_DART_POD
     size: 0.1
     costBuy: 70
@@ -544,6 +550,12 @@ items: #done
     battleType: 1
     invWidth: 1
     invHeight: 2
+    accuracyAkimbo: 25
+    tuAkimbo: 25
+    flatAkimbo: false
+    akimboShots: 3
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_GAUSS_PISTOL_CLIP
     size: 0.2
     costSell: 1050
@@ -911,6 +923,12 @@ items: #done
     recoveryPoints: 3
     armor: 45
     attraction: 1
+    accuracyAkimbo: 60
+    tuAkimbo: 25
+    flatAkimbo: false
+    akimboShots: 1 
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_PISTOL_POWER_CLIP
     requires:
       - STR_PISTOL_POWER_CLIP

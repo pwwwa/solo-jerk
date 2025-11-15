@@ -25,8 +25,8 @@ Global
 		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release_XP|x64.Build.0 = Release_XP|x64
 		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|Win32.ActiveCfg = Release|Win32
 		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|Win32.Build.0 = Release|Win32
-		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|x64.ActiveCfg = Debug|x64
-		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|x64.Build.0 = Debug|x64
+		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|x64.ActiveCfg = Release|x64
+		{D8F55ED4-1A4E-4111-8E83-153CF91FE25A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

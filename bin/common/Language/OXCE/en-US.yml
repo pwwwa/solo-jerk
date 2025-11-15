@@ -713,3 +713,12 @@ en-US:
   STR_FOR_DIFFICULTY: "for difficulty: {0}"
 #UfopaediaSelectState.cpp
   STR_NOT_AWARDED_YET: "Not awarded yet"
+#Akimbo options
+  STR_AKIMBO_SHOT: "Akimbo Shot"
+  STR_SHOT_TYPE_AKIMBO: "Akimbo Shot"
+  STR_RESERVE_TIME_UNITS_FOR_AKIMBO_SHOT: "Reserve TUs for Akimbo Shot"
+  STR_TIME_UNITS_RESERVED_FOR_AKIMBO_SHOT: "Time units reserved for Akimbo Shot"
+  STR_ACTION_ITEM_6: "Item action 6 (Akimbo)"
+#New
+  STR_MORALE_ATTACK_SUCCESS_NOTIFY: "Morale Attack Success Notification"
+  STR_MORALE_ATTACK_SUCCESS_NOTIFY_DESC: "Notify player about morale attack success.{NEWLINE}0 - No notify (Vanilla), 1 - Flash message, 2 - Info Box."

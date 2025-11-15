@@ -216,6 +216,12 @@ items:
     battleType: 1
     invWidth: 1
     invHeight: 2
+    tuAkimbo: 13
+    flatAkimbo: false
+    accuracyAkimbo: 55
+    akimboShots: 1
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_PISTOL_CLIP
     size: 0.1
     costBuy: 70
@@ -491,6 +497,12 @@ items:
     battleType: 1
     invWidth: 1
     invHeight: 2
+    tuAkimbo: 20
+    flatAkimbo: false
+    accuracyAkimbo: 23
+    akimboShots: 3
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_LASER_RIFLE
     size: 0.2
     costSell: 36900
@@ -786,6 +798,12 @@ items:
     invHeight: 2
     recoveryPoints: 3
     armor: 45
+    accuracyAkimbo: 45
+    tuAkimbo: 25
+    flatAkimbo: false
+    akimboShots: 3
+    sprayWaypoints: 2
+    akimboRange: 7
   - type: STR_PLASMA_PISTOL_CLIP
     requires:
       - STR_PLASMA_PISTOL_CLIP

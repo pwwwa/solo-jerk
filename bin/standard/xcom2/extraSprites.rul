@@ -99,3 +99,9 @@ extraSprites: #done
     singleImage: true
     files:
       0: Resources/UI/WpnActive.png
+  - type: akimboReserveIco
+    width: 22
+    height: 8
+    singleImage: true
+    files:
+      0: Resources/UI/akimboReserveIco.png

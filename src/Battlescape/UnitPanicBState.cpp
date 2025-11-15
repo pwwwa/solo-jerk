@@ -71,17 +71,16 @@ void UnitPanicBState::think()
 			// make autoshots if possible.
 			ba.type = BA_AUTOSHOT;
 			ba.updateTU();
-			bool canShoot = ba.haveTU() && _parent->getSave()->canUseWeapon(ba.weapon, ba.actor, _berserking, ba.type);
+			bool canShoot = ba.haveTU() && _parent->getSave()->canUseWeapon(ba.weapon, ba.actor, _berserking, ba.type)
+				&& ba.weapon->getRules()->getCostAuto().Time;
 
 				if (!canShoot)
 				{
-					ba.type = BA_AKIMBOSHOT;
-					ba.weapon = _unit->getRightHandWeapon(); // getMainHandWeapon is not equal to getActiveHandWeapon. temporal fix for correct berserk akimbo shooting. 
+					ba.weapon = const_cast<BattleItem*>(_unit->getActiveHand(_unit->getLeftHandWeapon(), _unit->getRightHandWeapon())); // getMainHandWeapon neq getActiveHand. temporal fix for correct berserk akimbo shooting.
+					ba.type = BA_AKIMBOSHOT; 
 					ba.updateTU();
-					canShoot = _parent->getSave()->canUseWeapon(_unit->getRightHandWeapon(), ba.actor, _berserking, BA_AKIMBOSHOT)
-						&& _parent->getSave()->canUseWeapon(_unit->getLeftHandWeapon(), ba.actor, _berserking, BA_AKIMBOSHOT)
-						&& (_unit->getTimeUnits() >= (_unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time + _unit->getRightHandWeapon()->getRules()->getCostAkimbo().Time))
-						&& _unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time && _unit->getRightHandWeapon()->getRules()->getCostAkimbo().Time;
+					canShoot = ba.haveTU() && _parent->getSave()->canUseWeapon(_unit->getRightHandWeapon(), ba.actor, _berserking, ba.type) && _parent->getSave()->canUseWeapon(_unit->getLeftHandWeapon(), ba.actor, _berserking, ba.type);
+				    //&& _unit->getTimeUnits() >= (_unit->getLeftHandWeapon()->getRules()->getCostAkimbo().Time + _unit->getRightHandWeapon()->getRules()->getCostAkimbo().Time);
 				}
 
 				if (!canShoot)
