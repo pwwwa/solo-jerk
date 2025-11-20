@@ -174,7 +174,7 @@ void ProjectileFlyBState::init()
 			+ _action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time)
 			&& _action.autoShotCounter == 0)
 			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.weapon).Time
-			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time || !_ammoOp)
+			|| !_action.actor->getActionTUs(BA_AKIMBOSHOT, _action.actor->getOpositeHandWeapon()).Time)
 		{
 			_action.result = "STR_NOT_ENOUGH_TIME_UNITS";
 			_parent->popState();
@@ -445,10 +445,14 @@ void ProjectileFlyBState::init()
 bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
-// AKIMBO SHOT SECTION
+
+	// AKIMBO SHOT SECTION
 	if (_action.type == BA_AKIMBOSHOT)
 	{
-		BattleItem* deopWeapon = _action.weapon; //remember ActiveHand weapon address
+		BattleItem* deopWeapon = const_cast<BattleItem*>(_action.actor->getActiveHand(_action.actor->getLeftHandWeapon(), _action.actor->getRightHandWeapon())); // remember current weapon address
+		BattleItem* deopAmmo = deopWeapon->getAmmoForAction(_action.type, nullptr ? 0 : &_action.result);
+		; // remember ActiveHand _ammo address
+
 		if (_action.autoShotCounter == 1)
 		{
 			_action.weapon = _action.actor->getOpositeHandWeapon(); // force spending of TU from second hand weapon cost
@@ -457,18 +461,51 @@ bool ProjectileFlyBState::createNewProjectile()
 			_action.weapon = deopWeapon;
 			_action.updateTU();
 		}
-		
-		if (_ammo->getAmmoQuantity() == 0 && _ammoOp->getAmmoQuantity() > 0 && (_action.autoShotCounter <= _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
+
+		if ((!deopAmmo) || deopAmmo->getAmmoQuantity() == 0) // additional avoiding of nulptr
 		{
-			_action.autoShotCounter = (_action.weapon->getActionConf(BA_AKIMBOSHOT)->shots + 1); // switch weapon if still have ammo to other weapon
-		}
-		else if (_ammoOp->getAmmoQuantity() == 0) // no ammo - stop
-		{
-			_parent->popState();
+			_action.autoShotCounter += (deopWeapon->getActionConf(_action.type)->shots - _action.actWeaponCounter);
 		}
 
-		if ((_action.autoShotCounter > _action.weapon->getActionConf(BA_AKIMBOSHOT)->shots))
+		if (_ammoOp->getAmmoQuantity() == 0)
 		{
+			_action.autoShotCounter += (_action.actor->getOpositeHandWeapon()->getActionConf(_action.type)->shots - _action.opWeaponCounter);
+		}
+
+		if (_action.autoShotCounter >= deopWeapon->getActionConf(_action.type)->shots + _action.actor->getOpositeHandWeapon()->getActionConf(_action.type)->shots + 1)
+		{
+			return false;
+		}
+
+		if (_action.actWeaponCounter <= _action.opWeaponCounter
+			&&_ammo->getAmmoQuantity() > 0
+			&& _action.actWeaponCounter < deopWeapon->getActionConf(_action.type)->shots
+			&& (deopAmmo) && deopAmmo->getAmmoQuantity() != 0) // additional avoiding nullptr
+		{
+			++_action.actWeaponCounter;
+			if (_action.autoShotCounter > 1)
+			{
+				_action.weapon = deopWeapon;
+				_ammo = deopAmmo;
+				/**
+				if (_action.weapon == _action.actor->getLeftHandWeapon())
+				{
+					_action.weapon = _action.actor->getRightHandWeapon();
+					_ammo = _action.actor->getRightHandWeapon()->getAmmoForAction(_action.type, &_action.result);
+				}
+				else
+				{
+					_action.weapon = _action.actor->getLeftHandWeapon();
+					_ammo = _action.actor->getLeftHandWeapon()->getAmmoForAction(_action.type, &_action.result);
+				}
+				**/
+			}
+		}
+		else if ((_action.actWeaponCounter > _action.opWeaponCounter
+			&& (_action.opWeaponCounter < _action.actor->getOpositeHandWeapon()->getActionConf(BA_AKIMBOSHOT)->shots) && _ammoOp->getAmmoQuantity() > 0)
+			||  (deopAmmo) &&  deopAmmo->getAmmoQuantity() == 0)
+		{
+			++_action.opWeaponCounter;
 			_action.weapon = _action.actor->getOpositeHandWeapon();
 			_ammo = _ammoOp; // wrong projectile impact fix
 		}

@@ -81,6 +81,8 @@ struct BattleAction : BattleActionCost
 	bool kneel = false;
 	int diff;
 	int autoShotCounter;
+	int actWeaponCounter;
+	int opWeaponCounter;
 	Position cameraPosition;
 	bool desperate; // ignoring newly-spotted units
 	int finalFacing;
@@ -92,7 +94,7 @@ struct BattleAction : BattleActionCost
 	int tuBefore = 0; // used to check if we actually did anyting in popState, if not we mark this unit for wanting to be skipped
 
 	/// Default constructor
-	BattleAction() : target(-1, -1, -1), targeting(false), value(0), diff(0), autoShotCounter(0), cameraPosition(0, 0, -1), desperate(false), finalFacing(-1), finalAction(false), number(0), sprayTargeting(false) { }
+	BattleAction() : target(-1, -1, -1), targeting(false), value(0), diff(0), autoShotCounter(0), actWeaponCounter(0), opWeaponCounter(0), cameraPosition(0, 0, -1), desperate(false), finalFacing(-1), finalAction(false), number(0), sprayTargeting(false) { }
 
 	/// Get move type
 	BattleActionMove getMoveType() const

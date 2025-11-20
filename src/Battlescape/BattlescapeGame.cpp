@@ -1469,7 +1469,8 @@ bool BattlescapeGame::checkReservedTU(BattleUnit *bu, int tu, int energy, bool j
 		switch (cost.type)
 		{
 		case BA_AKIMBOSHOT:
-			cost.Time += (_currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon())).Time + (bu->getBaseStats()->tu / 3);
+			cost.Time += _currentAction.actor->getActionTUs(BA_AKIMBOSHOT, _currentAction.actor->getOpositeHandWeapon()).Time
+				+ (bu->getBaseStats()->tu / 3);
 			break; // ?%
 		case BA_SNAPSHOT: cost.Time += (bu->getBaseStats()->tu / 3); break; // 33%
 		case BA_AUTOSHOT: cost.Time += ((bu->getBaseStats()->tu / 5)*2); break; // 40%
@@ -2226,8 +2227,10 @@ void BattlescapeGame::psiAttackMessage(BattleActionAttack attack, BattleUnit *vi
 		else
 		{
 			// show a little infobox if it's successful.  A Little ? No, it is better to add selectable options for moral attack notification behaviour
-			if (attack.type == BA_PANIC) {
-				switch (Options::moraleAttackSuccessNotify) {
+			if (attack.type == BA_PANIC)
+			{
+				switch (Options::moraleAttackSuccessNotify)
+				{
 				case 1:	_parentState->warning("STR_MORALE_ATTACK_SUCCESSFUL"); // show flash message
 					break;
 				case 2:	game->pushState(new InfoboxState(game->getLanguage()->getString("STR_MORALE_ATTACK_SUCCESSFUL"))); // show Info box

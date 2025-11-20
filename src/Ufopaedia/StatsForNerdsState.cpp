@@ -1941,7 +1941,7 @@ void StatsForNerdsState::initItemList()
 	addInteger(ss, itemRule->getAimRange(), "aimRange", aimRangeDefault);
 	addInteger(ss, itemRule->getAutoRange(), "autoRange", 7);
 	addInteger(ss, itemRule->getSnapRange(), "snapRange", 15);
-	addInteger(ss, itemRule->getAkimboRange(), "akimboRange", 15);
+	addInteger(ss, itemRule->getAkimboRange(), "akimboRange", 7);
 	int dropoffDefault = itemBattleType == BT_PSIAMP ? 1 : 2;
 	addInteger(ss, itemRule->getDropoff(), "dropoff", dropoffDefault);
 
