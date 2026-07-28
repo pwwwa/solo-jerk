@@ -156,8 +156,9 @@ void MeleeAttackBState::init()
 	{
 		// Check presence of any alive unit under feet and apply their height (it is 0 usually, but let check)
 		if (_target->getTile()->getTopItem() && _target->getTile()->getTopItem()->getUnit() && _target->getTile()->getTopItem()->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
-		{
-			_voxel.z = _target->getTile()->getTopItem()->getUnit()->getPosition().z;
+		{ 
+			_target = _target->getTile()->getTopItem()->getUnit();
+			_voxel.z = _target->getPosition().toVoxel().z;
 		}
 		else if (Mod::EXTENDED_TERRAIN_MELEE <= 0 ||
 			     _action.weapon &&
