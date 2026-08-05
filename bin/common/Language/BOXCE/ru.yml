@@ -121,7 +121,7 @@ ru:
   STR_TIME_UNITS_RESERVED_FOR_AKIMBO_SHOT: "Очки действия зарезервированы для стрельбы из друх рук"
   STR_ACTION_ITEM_6: "Действие 6 (Из двух рук)"
   STR_AKIMBO_MOD: "Стрельба из двух рук"
-  STR_AKIMBO_MOD_DESC: "Разрешить режим стрельбы из двух рук.{NEWLINE}0 - Отключить, 1 - Включить, но для доступа нажмите CTRL+click на оружие. 2 - Включить полностью. Все пистолеты получают эту опцию."
+  STR_AKIMBO_MOD_DESC: "Разрешить режим стрельбы из двух рук.{NEWLINE}{ALT}0{ALT} - Отключено, {ALT}1{ALT} - Включено, но скрыто.{ALT}CTRL+click{ALT} на оружии для доступа. {ALT}2{ALT} - Включено полностью. Все пистолеты получают эту опцию."
  # Diagonal Terrain melee
   STR_DIAG_TERRAIN_MELEE: "Рукопашно местность по диагонали "
   STR_DIAG_TERRAIN_MELEE_DESC: "Атака объектов ландшафта по диагонали в ближнем бою.{NEWLINE}Требует включения опции {ALT}TerrainMeleeExtended{ALT}.{NEWLINE}{ALT}Alt+клик{ALT} - принудительно бить текущую и соседние клетки."

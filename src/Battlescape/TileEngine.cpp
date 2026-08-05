@@ -4916,9 +4916,8 @@ VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target,
 	{
 		excludeAllUnits = true; // don't start unit spotting before pre-game inventory stuff (large units on the craftInventory tile will cause a crash if they're "spotted")
 	}
-	/**/
 	int rand = (int)RNG::generate(0, 1) ? -1 : 1;
-	calculateLineHelper(origin, target,
+	bool hit  = calculateLineHelper(origin,target,
 		[&](Position point)
 		{
 			if (storeTrajectory && trajectory)
@@ -4949,7 +4948,7 @@ VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target,
 			}
 			return false;
 		});
-	return V_OUTOFBOUNDS;
+	return hit ? V_OUTOFBOUNDS : V_EMPTY;
 }
 
 /**

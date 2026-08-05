@@ -1072,32 +1072,28 @@ bool Projectile::move()
 
 	const bool isPierce = _ammo && _ammo->getRules()->getPierceType() && !_ammo->getRules()->getShotgunPellets();
 	const bool isRangeEvent = _ammo && _ammo->getRules()->getMaxRangeEvent();
+	auto canPierce = [this]()->bool
+	{
+		return !_save->getBattleGame()->getPiercePower() ||
+				_save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_EMPTY ||
+		      ( _save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_UNIT &&
+				_save->getTile(getPosition().toTile())->getOverlappingUnit(_save)->isOutThresholdExceed() );
+	};
 
-	// pWWWa todo: need to make loop condition more readable, less conditional. Maybe make additional loop ?
-	for ( int i = 0; ( i < _speed && ( !isPierce || ( isPierce &&
-		(  !_save->getBattleGame()->getPiercePower()
-		||  _save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_EMPTY
-		|| (_save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_UNIT
-		&&  _save->getTile(getPosition().toTile())->getOverlappingUnit(_save)->isOutThresholdExceed())
-		) ) ) ); ++i )
+	for ( int i = 0; i < _speed && (!isPierce || canPierce()); ++i )
 	{
 		_position++;
-		if (_position == _trajectory.size())
-		{
-			_position--;
-			return false;
-		}
-
-		if ( isRangeEvent && ( _ammo->getRules()->isOutOfRange(_action.actor->distance3dToPositionSq(getPosition().toTile()))
-			|| ( _action.type == BA_LAUNCH && _action.waypoints.size() == 1
-			&&   _action.actor->distance3dToPositionSq(getPosition().toTile()) > _action.actor->distance3dToPositionSq(_action.target) ) ) )
-		{ // pWWWa: stop projectile with ammo maxRangeEvent flag, if it passed maxRange distance or guided missile reached last waypoint
-			return false;
-		}
-
-		if (isPierce && (!_save->getBattleGame()->getPiercePower() || _save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_OUTOFBOUNDS))
+		if ( _position == _trajectory.size() || isPierce &&
+		   (!_save->getBattleGame()->getPiercePower() || _save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_OUTOFBOUNDS) )
 		{ // pWWWa: stop pierceType projectile, if it drained their pierce power or crossed map edge, need position step back too for stuck avoiding in some cases
 			_position--;
+			return false;
+		}
+
+		if ( isRangeEvent && ( _ammo->getRules()->isOutOfRange(_action.actor->distance3dToPositionSq(getPosition().toTile())) ||
+		   ( _action.type == BA_LAUNCH && _action.waypoints.size() == 1 &&
+			 _action.actor->distance3dToPositionSq(getPosition().toTile()) > _action.actor->distance3dToPositionSq(_action.target) ) ) )
+		{ // pWWWa: stop projectile with ammo maxRangeEvent flag, if it passed maxRange distance or guided missile reached last waypoint
 			return false;
 		}
 

@@ -123,7 +123,7 @@ en-US:
   STR_TIME_UNITS_RESERVED_FOR_AKIMBO_SHOT: "Time units reserved for akimbo shots"
   STR_ACTION_ITEM_6: "Item Action 6 (Akimbo)"
   STR_AKIMBO_MOD: "Akimbo shooting"
-  STR_AKIMBO_MOD_DESC: "Allow dual-wield shooting mode for weapons.{NEWLINE}{ALT}0{ALT} - Disable, {ALT}1{ALT} - Enable, but {ALT}CTRL+click{ALT} on the weapon to access.{NEWLINE}{ALT}2{ALT} - Fully Enable. Each pistol gets this feature."
+  STR_AKIMBO_MOD_DESC: "Allow dual-wield shooting mode for weapons.{NEWLINE}{ALT}0{ALT} - Disabled, {ALT}1{ALT} - Enabled, but hidden. {ALT}CTRL+click{ALT} on the weapon for access. {ALT}2{ALT} - Fully Enabled. Each pistol gets this feature."
   # Diagonal Terrain melee
   STR_DIAG_TERRAIN_MELEE: "Diagonal Terrain Melee"
   STR_DIAG_TERRAIN_MELEE_DESC: "Hitting terrain objects at diagonal directions with melee.{NEWLINE}Requires activated {ALT}TerrainMeleeExtended{ALT} feature.{NEWLINE}{ALT}Alt+click{ALT} - forced hit objects at current and adjacent tiles."

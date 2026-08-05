@@ -115,7 +115,7 @@ void MeleeAttackBState::init()
 		_voxel = _action.target.toVoxel() + Position(8, 8, 12);
 
 		if (terrainMeleeTilePart == 4)
-		{ // Terrain melee higher floor object hit hack & helper
+		{ // Terrain melee higher "floor" tilepart hit hack & helper
 			while (_voxel.z > _action.target.toVoxel().z && _parent->getSave()->getTileEngine()->voxelCheck(_voxel, _unit) == V_EMPTY)
 			{
 				--_voxel.z;
@@ -157,7 +157,7 @@ void MeleeAttackBState::init()
 		// Check presence of any alive unit under feet and apply their height (it is 0 usually, but let check)
 		if (_target->getTile()->getTopItem() && _target->getTile()->getTopItem()->getUnit() && _target->getTile()->getTopItem()->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
 		{ 
-			_target = _target->getTile()->getTopItem()->getUnit();
+			_target = _target->getTile()->getTopItem()->getUnit(); // could be abused for Extra XP gain, but why not ?
 			_voxel.z = _target->getPosition().toVoxel().z;
 		}
 		else if (Mod::EXTENDED_TERRAIN_MELEE <= 0 ||
