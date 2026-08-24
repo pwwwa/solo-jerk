@@ -4910,14 +4910,10 @@ VoxelType TileEngine::calculateLineVoxel(Position origin, Position target, bool 
  */
 VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, BattleUnit *excludeAllBut, bool onlyVisible)
 {
+	bool excludeAllUnits = _save->isBeforeGame() ? true : false; // don't start unit spotting before pre-game inventory stuff (large units on the craftInventory tile will cause a crash if they're "spotted")
+	int rand = (int)RNG::generate(0, 1) ? -1 : 1; // trajectory position shifter for avoiding of passing thru 2 walls corner 
 
-	bool excludeAllUnits = false;
-	if (_save->isBeforeGame())
-	{
-		excludeAllUnits = true; // don't start unit spotting before pre-game inventory stuff (large units on the craftInventory tile will cause a crash if they're "spotted")
-	}
-	int rand = (int)RNG::generate(0, 1) ? -1 : 1;
-	bool hit  = calculateLineHelper(origin,target,
+	calculateLineHelper(origin,target,
 		[&](Position point)
 		{
 			if (storeTrajectory && trajectory)
@@ -4940,7 +4936,7 @@ VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target,
 			//check for xy diagonal intermediate voxel step	
 			if (voxelCheck(point, excludeUnit, excludeAllUnits, onlyVisible, excludeAllBut) == V_OUTOFBOUNDS)
 			{
-				if (trajectory != 0)
+				if (trajectory)
 				{ // store the position of impact
 					trajectory->push_back(point + Position(rand, -rand, 0));
 				}
@@ -4948,7 +4944,7 @@ VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target,
 			}
 			return false;
 		});
-	return hit ? V_OUTOFBOUNDS : V_EMPTY;
+	return V_OUTOFBOUNDS;
 }
 
 /**
@@ -6057,7 +6053,7 @@ bool TileEngine::validMeleeRange(Position pos, int direction, BattleUnit *attack
 		}
 	}
 
-	if (dest && chosenTarget && chosenTarget->getArmor()->getSize() == 1) // pWWWa: exclude big units due it can to change possible hit position and they can't be medikited
+	if (dest && chosenTarget && chosenTarget->getArmor()->getSize() == 1) // pWWWa: exclude big units due it can to change possible hit position and they can't be "medikited"
 	{
 		*dest = chosenTarget->getPosition();
 	}
@@ -6222,7 +6218,7 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 				if (isHighEnough)
 				{
 					aa->target = tt->getPosition();
-					aa->terrainMeleeTilePart = tp ? tp : 4;
+					aa->terrainMeleeTilePart = tp ? tp : 4; // pWWWa: !tp means O_FLOOR, switch it to O_MAX for further hitting of high floor objects
 					return true;
 				}
 			}
@@ -6248,21 +6244,21 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 		case 2: // East
 				if (setTarget(neighbouringTile, O_WESTWALL, action)   ||
 					setTarget(neighbouringTile2, O_WESTWALL, action)  ||
-					setTarget(neighbouringTile2, O_NORTHWALL, action) && size)
+					setTarget(neighbouringTile2, O_NORTHWALL, action) && size) // parallel wall between 2 parts of big unit
 				return true;
 				break;
 
 		case 4: // South
 				if (setTarget(neighbouringTile, O_NORTHWALL, action)  ||
 					setTarget(neighbouringTile2, O_NORTHWALL, action) ||
-					setTarget(neighbouringTile2, O_WESTWALL, action) && size)
+					setTarget(neighbouringTile2, O_WESTWALL, action) && size) // parallel wall between 2 parts of big unit
 				return true;
 				break;
 
 		case 6: // West
 				if (setTarget(originTile, O_WESTWALL, action)		  ||
 					setTarget(originTile2, O_WESTWALL, action)		  ||
-					setTarget(neighbouringTile2, O_NORTHWALL, action) && size)
+					setTarget(neighbouringTile2, O_NORTHWALL, action) && size) // parallel wall between 2 parts of big unit
 				return true;
 				break;
 
@@ -6306,14 +6302,14 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 		}
 
 		if (_save->isAltPressed(true))
-		{
+		{ // Forced terrain melee helper. Suitable for non-proper tile configuration aiming (etc. objecs part in floor tile "slot")
 			if (setTarget(neighbouringTile, O_NORTHWALL, action) ||
 				setTarget(neighbouringTile, O_WESTWALL, action)||
 				setTarget(neighbouringTile, O_FLOOR, action))
 			return true;
 
 			if (direction % 2)
-			{
+			{ // Diagonal object tp aiming
 				if (setTarget(neighbouringTile2, O_OBJECT, action) ||
 					setTarget(neighbouringTile3, O_OBJECT, action))
 				return true;

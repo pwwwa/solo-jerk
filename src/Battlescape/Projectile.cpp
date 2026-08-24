@@ -413,6 +413,7 @@ int Projectile::calculateTrajectory(double accuracy, const Position& originVoxel
 		_save->getBattleGame()->getPanicHandled() &&
 		_action.type != BA_LAUNCH &&
 		!_action.sprayTargeting)
+		//&& bu->getStatus() != STATUS_BERSERK)
 	{
 		Position hitPos = _trajectory.at(0).toTile();
 		if (test == V_UNIT && _save->getTile(hitPos) && _save->getTile(hitPos)->getUnit() == 0) // no unit? must be lower
@@ -819,7 +820,7 @@ void Projectile::applyAccuracyRealistic(Position origin, Position* target, doubl
 	Tile *targetTile = _save->getTile(target->toTile());
 	if (!targetTile) return;
 
-	bool isShotgun = _ammo && _ammo->getRules()->getShotgunPellets() != 0 && _ammo->getRules()->getDamageType()->isDirect();
+	bool isShotgun = _ammo && _ammo->getRules()->getShotgunPellets() != 0; //&& _ammo->getRules()->getDamageType()->isDirect();
 	bool isArcingShot = _action.weapon->getArcingShot(_action.type);
 	bool isSpray = _action.sprayTargeting;
 

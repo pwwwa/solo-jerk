@@ -26,6 +26,7 @@
 #include "../Engine/RNG.h"
 #include "BattlescapeGame.h"
 #include "../Mod/Mod.h"
+#include "../fmath.h"
 
 namespace OpenXcom
 {
@@ -72,9 +73,9 @@ void UnitPanicBState::think()
 				// make akimbo shot, if possible *carefully avoid nullptr to opposite hand*
 				ba.type = BA_AKIMBOSHOT;
 				ba.updateTU();
-				bool canShoot = _unit->isAkimbo() && ba.haveTU()
-							 && _parent->getSave()->canUseWeapon(_unit->getLeftHandWeapon(), _unit, _berserking, ba.type)
-					         &&	_parent->getSave()->canUseWeapon(_unit->getRightHandWeapon(), _unit, _berserking, ba.type);
+				bool canShoot = _unit->isAkimbo() && ba.haveTU() &&
+					            _parent->getSave()->canUseWeapon(_unit->getLeftHandWeapon(), _unit, _berserking, ba.type) &&
+					            _parent->getSave()->canUseWeapon(_unit->getRightHandWeapon(), _unit, _berserking, ba.type);
 
 				if (!canShoot)
 				{
@@ -115,10 +116,11 @@ void UnitPanicBState::think()
 						{
 							int newDist = Position::distance2d(_unit->getPosition(), bu->getPosition());
 							if ( newDist < dist &&
-							( (ba.type != BA_AKIMBOSHOT && !ba.weapon->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition())))
-							|| ( ba.type == BA_AKIMBOSHOT
-							&& !_unit->getLeftHandWeapon()->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition()))
-							&& !_unit->getRightHandWeapon()->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition())) ) ) )
+							( ( ba.type != BA_AKIMBOSHOT &&
+							   !ba.weapon->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition())) ) ||
+							  ( ba.type == BA_AKIMBOSHOT &&
+							   !_unit->getLeftHandWeapon()->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition())) &&
+							   !_unit->getRightHandWeapon()->getRules()->isOutOfRange(_unit->distance3dToPositionSq(bu->getPosition())) ) ) )
 
 							{
 								ba.target = bu->getPosition();
@@ -133,6 +135,8 @@ void UnitPanicBState::think()
 								  : std::min({6, _unit->getLeftHandWeapon()->getRules()->getMaxRange(), _unit->getRightHandWeapon()->getRules()->getMaxRange()});
 							
 						ba.target = Position(_unit->getPosition().x + RNG::generate(-range,range), _unit->getPosition().y + RNG::generate(-range,range), _unit->getPosition().z);
+						ba.target.x = Clamp<Sint16>(ba.target.x, 0, _parent->getSave()->getMapSizeX());
+						ba.target.y = Clamp<Sint16>(ba.target.y, 0, _parent->getSave()->getMapSizeY());
 					}
 					// include the cost for facing our target
 					int turnCost = std::abs(_unit->getDirection() - _unit->directionTo(ba.target));

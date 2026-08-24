@@ -471,9 +471,9 @@ bool ProjectileFlyBState::createNewProjectile()
 {
 	++_action.autoShotCounter;
 
-	/*********************\ 
+	/**********************\ 
 	* AKIMBO SHOTS SECTION *
-	\*********************/
+	\**********************/
 	if ( _action.type == BA_AKIMBOSHOT )
 	{	// Remember original Active Hand weapon and ammo for hand iteration mechanism (ammo address need for projectile and impact "alignment")
 		BattleItem* originWeapon = const_cast<BattleItem*>(_unit->getActiveHand(_unit->getLeftHandWeapon(), _unit->getRightHandWeapon()));
@@ -723,9 +723,9 @@ void ProjectileFlyBState::think()
 	/// checks if a weapon has any more shots to fire.
 	auto noMoreShotsToShoot = [this]()
 		{
-		return _action.type != BA_AKIMBOSHOT
+			return _action.type != BA_AKIMBOSHOT
 			   ? (!_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->getAmmoForAction(_action.type))
-			   : (_action.actWeaponCounter >= _action.actWeaponShotQnty && _action.opWeaponCounter >= _action.opWeaponShotQnty);
+			   : ( _action.actWeaponCounter >= _action.actWeaponShotQnty && _action.opWeaponCounter >= _action.opWeaponShotQnty);
 		};
 
 	_parent->getSave()->getBattleState()->clearMouseScrollingState();
@@ -827,8 +827,7 @@ void ProjectileFlyBState::think()
 					
 				if (_projectileImpact == V_UNIT)
 				{ // let arrange further handling of impacted units
-					if (!_parent->areAllEnemiesNeutralized())
-						projectileHitUnit(bullet->getPosition());
+					if (!_parent->areAllEnemiesNeutralized()) projectileHitUnit(bullet->getPosition());
 					_parent->checkForCasualties(dmgType, BattleActionAttack{_action.type, attack.attacker});
 					_parent->getSave()->reviveUnconsciousUnits(true);
 					_parent->convertInfected();
@@ -854,10 +853,10 @@ void ProjectileFlyBState::think()
 		if (!_parent->getMap()->getProjectile()->move())
 		{
 			// impact !
-			if ( _ammo &&  _ammo->getRules()->getMaxRangeEvent()
-				&& ( _ammo->getRules()->isOutOfRange(_action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile())) )
-				|| ( _action.type == BA_LAUNCH && _action.waypoints.size() == 1
-				&&   _action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile()) > _action.actor->distance3dToPositionSq(_action.target) ) )
+			if ( _ammo &&  _ammo->getRules()->getMaxRangeEvent() &&
+			   ( _ammo->getRules()->isOutOfRange(_action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile())) ) ||
+			   ( _action.type == BA_LAUNCH && _action.waypoints.size() == 1 &&
+				 _action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile()) > _action.actor->distance3dToPositionSq(_action.target) ) )
 			{ // Projectile has special maxRange event property, when reached restricted range or last guided waypoint, let handle it
 				switch (_ammo->getRules()->getMaxRangeEvent())
 				{
@@ -932,7 +931,7 @@ void ProjectileFlyBState::think()
 
 				if (_projectileImpact != V_OUTOFBOUNDS || (_ammo && _ammo->getRules()->getShotgunPellets()))
 				{
-					bool shotgun = _ammo && _ammo->getRules()->getShotgunPellets() != 0; // && _ammo->getRules()->getDamageType()->isDirect();
+					bool shotgun = _ammo && _ammo->getRules()->getShotgunPellets() != 0; // _ammo->getRules()->getDamageType()->isDirect();
 					int offset = 0;
 					// explosions impact not inside the voxel but two steps back (projectiles generally move 2 voxels at a time)
 					if (_ammo && _ammo->getRules()->getExplosionRadius(attack) != 0 && _projectileImpact != V_UNIT)
@@ -946,11 +945,6 @@ void ProjectileFlyBState::think()
 						noMoreShotsToShoot(),
 						shotgun ? 0 : _range + _parent->getMap()->getProjectile()->getDistance()
 					));
-
-					if (_projectileImpact == V_OUTOFBOUNDS)
-					{ // pWWWa: remove hit animation for first pellet during "shotgun void hit event", sound still plays (doesn`t want to cripple EBS)
-						_parent->getMap()->getExplosions()->clear();
-					}
 
 					if (_projectileImpact == V_UNIT)
 					{
@@ -968,9 +962,8 @@ void ProjectileFlyBState::think()
 						int choke = _action.weapon->getRules()->getShotgunChoke();
 						Position firstPelletImpact = _parent->getMap()->getProjectile()->getPosition(-2);
 						Position originalTarget = _targetVoxel;
-
-						int i = 1;
-						while (i != _ammo->getRules()->getShotgunPellets())
+						
+						for (int i = 1; i < _ammo->getRules()->getShotgunPellets(); ++i)
 						{
 							if (behaviorType == 1)
 							{
@@ -984,7 +977,6 @@ void ProjectileFlyBState::think()
 									_targetVoxel = originalTarget;
 								}
 							}
-
 
 							Projectile *proj = new Projectile(_parent->getMod(), _parent->getSave(), _action, _origin, _targetVoxel, _ammo);
 
@@ -1033,10 +1025,10 @@ void ProjectileFlyBState::think()
 									else
 									{	// handle direct hit
 										_parent->getSave()->getTileEngine()->hit(attack, proj->getPosition(offset), power, _ammo->getRules()->getDamageType());
+										_parent->playSound(_ammo->getRules()->getHitSound());
 									}
 								}
 							}
-							++i;
 							delete proj;
 						}
 

@@ -585,48 +585,51 @@ void createAdvancedOptionsOTHER()
 	_info.push_back(OptionInfo(OPTION_OTHER, "baseDetectionProbability", &baseDetectionProbability, false, "STR_DISPLAY_BASE_DETECTION_PROBABILITY", "STR_BASESCAPE"));
 
 	// OTHER options Battlescape
+	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOW", &oxceFOW, 0, "STR_FOW", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOWColor", &oxceFOWColor, 15, "STR_FOW_COLOR", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "oxceNumpadUnitMovement", &oxceNumpadMove, false, "STR_NUMPAD_MOVE", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "moraleAttackSuccessNotify", &moraleAttackSuccessNotify, 0, "STR_MORALE_ATTACK_SUCCESS_NOTIFY", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "diagTerrainMelee", &diagTerrainMelee, false, "STR_DIAG_TERRAIN_MELEE", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "moraleAttackSuccessNotify", &moraleAttackSuccessNotify, 0, "STR_MORALE_ATTACK_SUCCESS_NOTIFY", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "forcedAbsoluteCosts", &forcedAbsoluteCosts, false, "STR_FORCED_ABSOLUTE_COSTS", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "shootingSpreadMode", &shootingSpreadMode, 1, "STR_SHOOTING_SPREAD_MODE", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "useChanceToHit", &useChanceToHit, true, "STR_BATTLECHANCETOHIT", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticAccuracy", &battleRealisticAccuracy, false, "STR_BATTLEREALISTICACCURACY", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedAimed", &battleRealisticImprovedAimed, true, "STR_BATTLEREALISTICIMPAIMED", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedLof", &battleRealisticImprovedLof, false, "STR_BATTLEREALISTICIMPLOF", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticShotDispersion", &battleRealisticShotDispersion, 1, "STR_BATTLEREALISTICSHOTDISPERSION", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticCoverEfficiency", &battleRealisticCoverEfficiency, 3, "STR_BATTLEREALISTICCOVEREFFICIENCY", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayRolls", &battleRealisticDisplayRolls, false, "STR_BATTLEREALISTICDISPLAYROLLS", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayOthersRolls", &battleRealisticDisplayOthersRolls, false, "STR_BATTLEREALISTICDISPLAYOTHERSROLLS", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleAltGrenades", &battleAltGrenades, false, "STR_BATTLEALTGRENADES", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "shootingSpreadMode", &shootingSpreadMode, 1, "STR_SHOOTING_SPREAD_MODE", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "battleThrownSpeed", &battleThrownSpeed, 0, "STR_BATTLETHROWNSPEED", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "instantPrime", &instantPrime, false, "STR_INSTANTPRIME", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "updateTurnsSinceSeenByClue", &updateTurnsSinceSeenByClue, true, "STR_UPDATETURNSSINCESEENBYCLUE", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "strictBlockedChecking", &strictBlockedChecking, false, "STR_STRICTBLOCKEDCHECKING", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "battleTerrainSquishyness", &battleTerrainSquishyness, 1, "STR_BATTLETERRAINSQUISHYNESS", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOW", &oxceFOW, 0, "STR_FOW", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOWColor", &oxceFOWColor, 1, "STR_FOW_COLOR", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "oxceSmartCtrlEquip", &oxceSmartCtrlEquip, true, "STR_SMARTCONTROLEQUIP", "STR_BATTLESCAPE"));
+	
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleAltGrenades", &battleAltGrenades, false, "STR_BATTLEALTGRENADES", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "instantPrime", &instantPrime, false, "STR_INSTANTPRIME", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "preprimeGrenades", &preprimeGrenades, 1, "STR_PREPRIMEGRENADES", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "updateTurnsSinceSeenByClue", &updateTurnsSinceSeenByClue, true, "STR_UPDATETURNSSINCESEENBYCLUE", "STR_BATTLESCAPE"));
+
+	// OTHER Realistic Accuracy
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticAccuracy", &battleRealisticAccuracy, false, "STR_BATTLEREALISTICACCURACY", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedAimed", &battleRealisticImprovedAimed, true, "STR_BATTLEREALISTICIMPAIMED", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedLof", &battleRealisticImprovedLof, false, "STR_BATTLEREALISTICIMPLOF", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticShotDispersion", &battleRealisticShotDispersion, 1, "STR_BATTLEREALISTICSHOTDISPERSION", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticCoverEfficiency", &battleRealisticCoverEfficiency, 3, "STR_BATTLEREALISTICCOVEREFFICIENCY", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayRolls", &battleRealisticDisplayRolls, false, "STR_BATTLEREALISTICDISPLAYROLLS", "STR_RA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayOthersRolls", &battleRealisticDisplayOthersRolls, false, "STR_BATTLEREALISTICDISPLAYOTHERSROLLS", "STR_RA"));
 
 	// OTHER options AI
-	_info.push_back(OptionInfo(OPTION_OTHER, "brutalAI", &brutalAI, 1, "STR_BRUTALAI", "STR_AI"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "brutalAI", &brutalAI, 0, "STR_BRUTALAI", "STR_AI"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "brutalCivilians", &brutalCivilians, 0, "STR_BRUTALCIVILIANS", "STR_AI"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "ignoreDelay", &ignoreDelay, true, "STR_IGNOREDELAY", "STR_AI"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "allowPreprime", &allowPreprime, true, "STR_ALLOWPREPRIME", "STR_AI"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "avoidMines", &avoidMines, true, "STR_AVOIDMINES", "STR_AI"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "ignoreDelay", &ignoreDelay, false, "STR_IGNOREDELAY", "STR_AI"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "allowPreprime", &allowPreprime, false, "STR_ALLOWPREPRIME", "STR_AI"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "avoidMines", &avoidMines, false, "STR_AVOIDMINES", "STR_AI"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "aiPeformance", &aiPerformanceOptimization, false, "STR_AI_PERFORMANCE", "STR_AI"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "aiCheatMode", &aiCheatMode, 0, "STR_AICHEATMODE", "STR_AI"));
 
 	// OTHER options Autoplay
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombat", &autoCombat, false, "STR_AUTOCOMBAT", "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatEachCombat", &autoCombatEachCombat, true, "STR_AUTOCOMBAT_EACH_COMBAT", "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatEachTurn", &autoCombatEachTurn, true, "STR_AUTOCOMBAT_EACH_TURN", "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatControlPerUnit", &autoCombatControlPerUnit, true, "STR_AUTOCOMBAT_PER_UNIT", "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultSoldier",     &autoCombatDefaultSoldier,     true, "STR_AUTOCOMBAT_DEFAULT_SOLDIER",     "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultHWP",         &autoCombatDefaultHWP,         true, "STR_AUTOCOMBAT_DEFAULT_HWP",         "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultMindControl", &autoCombatDefaultMindControl, true, "STR_AUTOCOMBAT_DEFAULT_MINDCONTROL", "STR_AUTO"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultRemain",      &autoCombatDefaultRemain,      true, "STR_AUTOCOMBAT_DEFAULT_REMAIN",      "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombat",					 &autoCombat,					false, "STR_AUTOCOMBAT",					 "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatEachCombat",		 &autoCombatEachCombat,			false, "STR_AUTOCOMBAT_EACH_COMBAT",		 "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatEachTurn",			 &autoCombatEachTurn,			true,  "STR_AUTOCOMBAT_EACH_TURN",			 "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatControlPerUnit",	 &autoCombatControlPerUnit,		true,  "STR_AUTOCOMBAT_PER_UNIT",			 "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultSoldier",     &autoCombatDefaultSoldier,     true,  "STR_AUTOCOMBAT_DEFAULT_SOLDIER",     "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultHWP",         &autoCombatDefaultHWP,         true,  "STR_AUTOCOMBAT_DEFAULT_HWP",         "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultMindControl", &autoCombatDefaultMindControl, true,  "STR_AUTOCOMBAT_DEFAULT_MINDCONTROL", "STR_AUTO"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "autoCombatDefaultRemain",      &autoCombatDefaultRemain,      false, "STR_AUTOCOMBAT_DEFAULT_REMAIN",		 "STR_AUTO"));
 }
 
 void createControlsOTHER()

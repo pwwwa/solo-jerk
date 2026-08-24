@@ -56,10 +56,7 @@ void ScannerView::draw()
 	const bool isScanAll = _action->weapon->getRules()->isScanAll(); 
 
 	clear();
-
 	this->lock();
-
-
 
 	for (int x = -scanRad; x <= scanRad; x++)
 	{
@@ -90,8 +87,6 @@ void ScannerView::draw()
 
 	surface->blitNShade(this, (9*8)-4, (9*8)-4, 0);
 	this->unlock();
-
-
 }
 
 /**

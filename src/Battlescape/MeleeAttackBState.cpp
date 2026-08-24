@@ -286,7 +286,7 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 	difference.y = Clamp<Sint16>(difference.y, -1, 1);
 	difference.z = Clamp<Sint16>(difference.z, -1, 1);
 
-	// pWWWa: shift the impact position in victim's voxel space closer to the attacker's location
+	// pWWWa: shift the impact position inside of victim's voxel space closer to the attacker's location
 	while ( _parent->getTileEngine()->voxelCheck((_voxel + difference), _unit) == V_UNIT &&
 		   (_voxel.x != attackerPos.x || _voxel.y != attackerPos.y || _voxel.z != attackerPos.z) )
 	{

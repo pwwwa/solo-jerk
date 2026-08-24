@@ -103,7 +103,7 @@ void ExplosionBState::init()
 		}
 		else
 		{
-			if (_attack.weapon_item && (!itemRule->getPierceType() || !itemRule->getDamageType()->isDirect()))
+			if (!itemRule->getPierceType() || !itemRule->getDamageType()->isDirect())
 			{
 				if (_attack.weapon_item->getRules()->getIgnoreAmmoPower())
 				{
@@ -203,6 +203,11 @@ void ExplosionBState::init()
 
 
 	bool range = !(_hit || (_attack.weapon_item && _attack.weapon_item->getRules()->getBattleType() == BT_PSIAMP));
+
+	if (_attack.damage_item && _attack.damage_item->getRules()->getShotgunPellets() && _parent->getTileEngine()->voxelCheck(_center, _attack.attacker) != V_OUTOFBOUNDS)
+	{
+		goto voidHitEvent;
+	}
 
 	if (_areaOfEffect)
 	{
@@ -365,6 +370,8 @@ void ExplosionBState::init()
 		// bullet hit sound
 		_parent->playSound(sound, _center.toTile());
 	}
+
+	voidHitEvent:
 
 	if (_attack.type == BA_SELF_DESTRUCT)
 	{

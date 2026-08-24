@@ -4061,16 +4061,17 @@ BattleItem *BattleUnit::getRightHandWeapon() const
  */
 BattleItem *BattleUnit::getLeftHandWeapon() const
 {
-	for (auto* bi : _inventory)
+	for (auto &bi : _inventory)
 	{
 		auto* slot = bi->getSlot();
 		if (slot && slot->isLeftHand())
 		{
-			return bi;
+				return bi;
 		}
 	}
 	return nullptr;
 }
+
 /**
  *  Gets the item from inactive hand.
  * @return Item in inactive hand. Akimbo hands switching.
@@ -4078,7 +4079,7 @@ BattleItem *BattleUnit::getLeftHandWeapon() const
  */
 BattleItem* BattleUnit::getOppositeHandWeapon() const
 {
-	BattleItem* activeHand = const_cast<BattleItem*>(getActiveHand(getLeftHandWeapon(), getRightHandWeapon())); 
+	const BattleItem *activeHand = getActiveHand(getLeftHandWeapon(), getRightHandWeapon()); 
 	if (activeHand == getLeftHandWeapon() && getRightHandWeapon())
 	{
 		return getRightHandWeapon();
@@ -4092,6 +4093,7 @@ BattleItem* BattleUnit::getOppositeHandWeapon() const
 		return nullptr;
 	}
 }
+
 /**
  * Check if unit able to perform akimbo shot
  */

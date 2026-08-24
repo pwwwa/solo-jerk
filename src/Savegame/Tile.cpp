@@ -1205,7 +1205,7 @@ int Tile::getTerrainLevel(BattleUnit* unit) const
 		return _cache.terrainLevel;
 	}
 
-	const Position unitPos = unit->getPosition();
+	const Position &unitPos = unit->getPosition();
 	int lowLevel = 24;
 
 	for (int x = 0; x < 2; ++x)

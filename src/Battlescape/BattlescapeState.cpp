@@ -3174,10 +3174,9 @@ inline void BattlescapeState::handle(Action *action)
 									unitUnderTheCursor->moraleChange(-moraleLoss);
 									switch (Options::moraleAttackSuccessNotify)
 									{
-									case 1:	_battleGame->psiAttackMessage(BattleActionAttack{BA_PANIC, unitUnderTheCursor}, unitUnderTheCursor); break;
-									case 2:	_game->pushState(new InfoboxState(_game->getLanguage()->getString("STR_MORALE_ATTACK_SUCCESSFUL")));
+										case 1:	_battleGame->psiAttackMessage(BattleActionAttack{BA_PANIC, unitUnderTheCursor}, unitUnderTheCursor); break;
+										case 2:	_game->pushState(new InfoboxState(_game->getLanguage()->getString("STR_MORALE_ATTACK_SUCCESSFUL")));
 									}
-									
 								}
 							}
 							else
@@ -3241,22 +3240,19 @@ inline void BattlescapeState::handle(Action *action)
 							int turnDelta = 0;
 							switch (key)
 							{
-							case SDLK_KP8:
-								numpadDir = facing;
-								break; // forward
-							case SDLK_KP5:
-								numpadDir = (facing + 4) % 8;
-								break; // backward
-							case SDLK_KP4:
-								numpadDir = (facing - 1 + 8) % 8;
-								turnDelta = -1;
-								break; // turn left
-							case SDLK_KP6:
-								numpadDir = (facing + 1) % 8;
-								turnDelta = 1;
-								break; // turn right
-							default:
-								break;
+								case SDLK_KP8:
+									numpadDir = facing;
+									break; // forward
+								case SDLK_KP5:
+									numpadDir = (facing + 4) % 8;
+									break; // backward
+								case SDLK_KP4:
+									numpadDir = (facing - 1 + 8) % 8;
+									turnDelta = -1;
+									break; // turn left
+								case SDLK_KP6:
+									numpadDir = (facing + 1) % 8;
+									turnDelta = 1; // turn right
 							}
 							if (numpadDir >= 0)
 							{
@@ -3283,32 +3279,14 @@ inline void BattlescapeState::handle(Action *action)
 
 						switch (key)
 						{
-						case SDLK_KP8:
-							numpadDir = 7;
-							break; // up → NW	8
-						case SDLK_KP9:
-							numpadDir = 0;
-							break; // up-right → N 9
-						case SDLK_KP6:
-							numpadDir = 1;
-							break; // right → NE 6
-						case SDLK_KP3:
-							numpadDir = 2;
-							break; // down-right → E 3
-						case SDLK_KP2:
-							numpadDir = 3;
-							break; // down → SE 2
-						case SDLK_KP1:
-							numpadDir = 4;
-							break; // down-left → S 1
-						case SDLK_KP4:
-							numpadDir = 5;
-							break; // left → SW 4
-						case SDLK_KP7:
-							numpadDir = 6;
-							break; // up-left → W 7
-						default:
-							break;
+							case SDLK_KP8: numpadDir = 7; break; // up → NW	8
+							case SDLK_KP9: numpadDir = 0; break; // up-right → N 9
+							case SDLK_KP6: numpadDir = 1; break; // right → NE 6
+							case SDLK_KP3: numpadDir = 2; break; // down-right → E 3
+							case SDLK_KP2: numpadDir = 3; break; // down → SE 2
+							case SDLK_KP1: numpadDir = 4; break; // down-left → S 1
+							case SDLK_KP4: numpadDir = 5; break; // left → SW 4
+							case SDLK_KP7: numpadDir = 6;		 // up-left → W 7
 						}
 						if (numpadDir >= 0)
 						{
@@ -3342,7 +3320,7 @@ inline void BattlescapeState::handle(Action *action)
 				}
 			}
 		}
-
+		/** /
 		// numpad key release (outside cursor check so releases aren't missed during movement)
 		if (action->getDetails()->type == SDL_KEYUP)
 		{
@@ -3362,7 +3340,7 @@ inline void BattlescapeState::handle(Action *action)
 			default:
 				break;
 			}
-		}
+		} /**/
 	}
 }
 

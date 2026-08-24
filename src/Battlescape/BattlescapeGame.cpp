@@ -100,7 +100,7 @@ void BattleActionCost::clearTU()
 bool BattleActionCost::haveTU(std::string *message)
 {
 
-	if (actor->isAkimbo() && type == BA_AKIMBOSHOT)
+	if (type == BA_AKIMBOSHOT && actor->isAkimbo())
 	{	// it allows to remove mass code usage checking for both weapons in hands at several places, but requires some 'hacky" adjustment for reserveTU checking
 		Time = std::max(actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Time, actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Time);
 		Energy = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Energy + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Energy;
@@ -2269,9 +2269,9 @@ void BattlescapeGame::turnUnit(BattleUnit* unit, int dir)
 }
 
 // Get current piercing power of projectile
-int BattlescapeGame::getPiercePower() const { return _piercePower > 0 ? _piercePower : 0; };
+int BattlescapeGame::getPiercePower() const { return _piercePower; };
 // Set current piercing power of projectile
-void BattlescapeGame::setPiercePower(int power) { _piercePower = power; };
+void BattlescapeGame::setPiercePower(int power) { _piercePower = power > 0 ? power : 0; };
 
 /**
  * Requests the end of the turn (waits for explosions etc to really end the turn).
