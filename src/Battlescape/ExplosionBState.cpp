@@ -204,7 +204,7 @@ void ExplosionBState::init()
 
 	bool range = !(_hit || (_attack.weapon_item && _attack.weapon_item->getRules()->getBattleType() == BT_PSIAMP));
 
-	if (_attack.damage_item && _attack.damage_item->getRules()->getShotgunPellets() && _parent->getTileEngine()->voxelCheck(_center, _attack.attacker) != V_OUTOFBOUNDS)
+	if (_attack.damage_item && _attack.damage_item->getRules()->getShotgunPellets() && _parent->getTileEngine()->voxelCheck(_center, _attack.attacker) == V_OUTOFBOUNDS)
 	{
 		_parent->setStateInterval(std::max(1, BattlescapeState::DEFAULT_ANIM_SPEED / 2));
 		goto voidHitEvent;

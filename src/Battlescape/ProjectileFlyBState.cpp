@@ -934,7 +934,7 @@ void ProjectileFlyBState::think()
 					bool shotgun = _ammo && _ammo->getRules()->getShotgunPellets() != 0; // _ammo->getRules()->getDamageType()->isDirect();
 					int offset = 0;
 					// explosions impact not inside the voxel but two steps back (projectiles generally move 2 voxels at a time)
-					if (_ammo && _ammo->getRules()->getExplosionRadius(attack) != 0 && _projectileImpact != V_UNIT)
+					if (_ammo && _ammo->getRules()->getExplosionRadius(attack) != 0 && _projectileImpact < V_UNIT)
 					{
 						offset = -2;
 					}
