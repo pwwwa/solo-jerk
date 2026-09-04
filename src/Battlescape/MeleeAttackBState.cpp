@@ -113,15 +113,7 @@ void MeleeAttackBState::init()
 	if (terrainMeleeTilePart > 0)
 	{
 		_voxel = _action.target.toVoxel() + Position(8, 8, 12);
-
-		if (terrainMeleeTilePart == 4)
-		{ // Terrain melee higher "floor" tilepart hit hack & helper
-			while (_voxel.z > _action.target.toVoxel().z && _parent->getSave()->getTileEngine()->voxelCheck(_voxel, _unit) == V_EMPTY)
-			{
-				--_voxel.z;
-			}
-		}
-		performMeleeAttack(terrainMeleeTilePart != 4 ? terrainMeleeTilePart : 0);
+		performMeleeAttack(terrainMeleeTilePart);
 		return;
 	}
 
@@ -170,30 +162,7 @@ void MeleeAttackBState::init()
 			_parent->popState();
 			return;
 		}
-		else
-		{
-			// Let dive in & check till any terrain stuff will be found 
-			while (_voxel.z > _action.target.toVoxel().z && _parent->getTileEngine()->voxelCheck(_voxel, _unit) == V_EMPTY)
-			{
-				--_voxel.z;
-			}
-		}
-		goto endForceMeleeFloor;
 	}
-
-	// Miss unit, really ? Recheck tile's vertical axis
-	if (_parent->getTileEngine()->voxelCheck(_voxel, _unit) != V_UNIT)
-	{ 
-		for (int z = 24; z >= 0; --z)
-		{
-			if (_parent->getTileEngine()->voxelCheck(_action.target.toVoxel() + Position(8, 8, z), _unit) == V_UNIT)
-			{
-				_voxel = _action.target.toVoxel() + Position(8, 8, z); break;
-			}
-		}
-	}
-
-	endForceMeleeFloor:
 
 	if (!_parent->getSave()->getTile(_voxel.toTile()))
 	{
@@ -276,25 +245,49 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 	_action.weapon->spendAmmoForAction(BA_HIT, _parent->getSave());
 	_parent->getMap()->setCursorType(CT_NONE);
 
-	// offset the damage voxel ever so slightly so that the target knows which side the attack came from
-	int attackerHeight = -_parent->getSave()->getTile(_unit->getPosition())->getTerrainLevel(_unit) + _unit->getHeight() / 2;
-	Position attackerPos = _unit->getPositionVexels() + Position(0, 0, attackerHeight);
-	Position difference = !_target ? _unit->getPosition() - _action.target : attackerPos - _voxel;
-
-	// clamp the values for further "one step shifting" closer to attacker
-	difference.x = Clamp<Sint16>(difference.x, -1, 1);
-	difference.y = Clamp<Sint16>(difference.y, -1, 1);
-	difference.z = Clamp<Sint16>(difference.z, -1, 1);
-
-	// pWWWa: shift the impact position inside of victim's voxel space closer to the attacker's location
-	while ( _parent->getTileEngine()->voxelCheck((_voxel + difference), _unit) == V_UNIT &&
-		   (_voxel.x != attackerPos.x || _voxel.y != attackerPos.y || _voxel.z != attackerPos.z) )
+	if (_target && _target != _unit)
 	{
-		_voxel += difference;
+		// pWWWa: Miss to target, really ? Recheck tile's vertical axis and find any high victim's piece.
+		if (_parent->getTileEngine()->voxelCheck(_voxel, _unit) != V_UNIT)
+		{
+			for (int z = 24; z >= 0; --z)
+			{
+				if (_parent->getTileEngine()->voxelCheck(_action.target.toVoxel() + Position(8, 8, z), _unit) == V_UNIT)
+				{
+					_voxel = _action.target.toVoxel() + Position(8, 8, z);
+					break;
+				}
+			}
+		}
+
+		// Offset the damage voxel to attacker's direction, so that the target knows which side the attack came from
+		const int attackerHeight = -_parent->getSave()->getTile(_unit->getPosition())->getTerrainLevel(_unit) + _unit->getHeight() / 2;
+		const Position attackerPos = _unit->getPositionVexels() + Position(0, 0, attackerHeight);
+		Position difference = !_target ? _unit->getPosition() - _action.target : attackerPos - _voxel;
+
+		// pWWWa: Make "one step shifting" vector for further offset processing
+		difference.x = Clamp<Sint8>(difference.x, -1, 1);
+		difference.y = Clamp<Sint8>(difference.y, -1, 1);
+		difference.z = Clamp<Sint8>(difference.z, -1, 1);
+
+		// pWWWa: shift the damage voxel inside of victim's voxel space to the closest possible to attacker's location
+		while (_parent->getTileEngine()->voxelCheck((_voxel + difference), _unit) == V_UNIT &&
+			  (_voxel.x != attackerPos.x || _voxel.y != attackerPos.y || _voxel.z != attackerPos.z))
+		{
+			_voxel += difference;
+		}
+	}
+	else if (_target == _unit || terrainMeleeTilePart == 4)
+	{
+		// pWWWa: handling for miss during hitting of floor terrain attempt
+		while (_voxel.z > _action.target.toVoxel().z && _parent->getTileEngine()->voxelCheck(_voxel, _unit) == V_EMPTY)
+		{
+			--_voxel.z;
+		}
 	}
 
 	// make an explosion action
-	_parent->statePushFront(new ExplosionBState(_parent, _voxel, BattleActionAttack::GetAferShoot(_action, _ammo), 0, true, 0, 0, terrainMeleeTilePart));
+	_parent->statePushFront(new ExplosionBState(_parent, _voxel, BattleActionAttack::GetAferShoot(_action, _ammo), 0, true, 0, 0, terrainMeleeTilePart < 4 ? terrainMeleeTilePart : 0));
 
 
 	_reaction = true;

@@ -103,7 +103,7 @@ void ExplosionBState::init()
 		}
 		else
 		{
-			if (!itemRule->getPierceType() || !itemRule->getDamageType()->isDirect())
+			if (!itemRule->getPierceType() || !itemRule->getDamageType()->isDirect()) // Exclude pierceType for avoid of extra damage.
 			{
 				if (_attack.weapon_item->getRules()->getIgnoreAmmoPower())
 				{

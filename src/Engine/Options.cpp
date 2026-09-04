@@ -585,11 +585,12 @@ void createAdvancedOptionsOTHER()
 	_info.push_back(OptionInfo(OPTION_OTHER, "baseDetectionProbability", &baseDetectionProbability, false, "STR_DISPLAY_BASE_DETECTION_PROBABILITY", "STR_BASESCAPE"));
 
 	// OTHER options Battlescape
-	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOW", &oxceFOW, 0, "STR_FOW", "STR_BATTLESCAPE"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOWColor", &oxceFOWColor, 15, "STR_FOW_COLOR", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "floatUnitBobbing", &floatUnitBobbing, false, "STR_FLOAT_UNIT_BOBBING", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "oxceNumpadUnitMovement", &oxceNumpadMove, false, "STR_NUMPAD_MOVE", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "diagTerrainMelee", &diagTerrainMelee, false, "STR_DIAG_TERRAIN_MELEE", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "moraleAttackSuccessNotify", &moraleAttackSuccessNotify, 0, "STR_MORALE_ATTACK_SUCCESS_NOTIFY", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOW", &oxceFOW, 0, "STR_FOW", "STR_BATTLESCAPE"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "oxceFOWColor", &oxceFOWColor, 1, "STR_FOW_COLOR", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "forcedAbsoluteCosts", &forcedAbsoluteCosts, false, "STR_FORCED_ABSOLUTE_COSTS", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "useChanceToHit", &useChanceToHit, true, "STR_BATTLECHANCETOHIT", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "shootingSpreadMode", &shootingSpreadMode, 1, "STR_SHOOTING_SPREAD_MODE", "STR_BATTLESCAPE"));
@@ -598,7 +599,6 @@ void createAdvancedOptionsOTHER()
 	_info.push_back(OptionInfo(OPTION_OTHER, "strictBlockedChecking", &strictBlockedChecking, false, "STR_STRICTBLOCKEDCHECKING", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "battleTerrainSquishyness", &battleTerrainSquishyness, 1, "STR_BATTLETERRAINSQUISHYNESS", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "oxceSmartCtrlEquip", &oxceSmartCtrlEquip, true, "STR_SMARTCONTROLEQUIP", "STR_BATTLESCAPE"));
-	
 	_info.push_back(OptionInfo(OPTION_OTHER, "battleAltGrenades", &battleAltGrenades, false, "STR_BATTLEALTGRENADES", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "instantPrime", &instantPrime, false, "STR_INSTANTPRIME", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "preprimeGrenades", &preprimeGrenades, 1, "STR_PREPRIMEGRENADES", "STR_BATTLESCAPE"));

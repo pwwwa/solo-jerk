@@ -698,7 +698,7 @@ void RuleItem::load(const YAML::YamlNodeReader& node, Mod *mod, const ModScript&
 
 	if (!getCostAkimbo().Time && !isFixed() && isPistol() && getCostSnap().Time)
 	{ // Is pistol has no akimbo feature ? let fix it within shapshot config. 
-		auto temp = _confSnap;
+		auto &temp = _confSnap;
 		_confAkimbo = temp;
 		_confAkimbo.cost.Time.setValue((getCostAkimbo().Time + 3));
 		_confAkimbo.accuracy -= 7;

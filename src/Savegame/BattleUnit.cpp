@@ -426,7 +426,7 @@ BattleUnit::BattleUnit(const Mod *mod, const Unit *unit, UnitFaction faction, in
 	_fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), _aiMedikitUsed(false), _fire(0), _currentAIState(0),
 	_allowAutoCombat(true),
 	_visible(false), _exp{ }, _expTmp{ },
-	_motionPoints(0), _scannedTurn(-1), _customMarker(0), _kills(0), _hitByFire(false), _hitByAnything(false), _alreadyExploded(false), _fireMaxHit(0), _smokeMaxHit(0),
+	_motionPoints(0), _scannedTurn(-1), _customMarker(0), _kills(0), _hitByFire(false), _hitByAnything(false), _hitByPierce(false), _alreadyExploded(false), _fireMaxHit(0), _smokeMaxHit(0),
 	_moraleRestored(0), _notificationShown(0), _charging(0),
 	_turnsSinceSeenByHostile(255), _turnsSinceSeenByNeutral(255), _turnsSinceSeenByPlayer(255),
 	_tileLastSpottedByHostile(-1), _tileLastSpottedByNeutral(-1), _tileLastSpottedByPlayer(-1),
@@ -2156,6 +2156,12 @@ int BattleUnit::damage(Position relative, int damage, const RuleDamageType *type
 			attack.attacker->setTurnsSinceSpottedByFaction(getFaction(), std::get<arg_attackerTurnsSinceSpotted>(args.data));
 			attack.attacker->setTurnsLeftSpottedForSnipersByFaction(getFaction(), std::get<arg_attackerTurnsLeftSpottedForSnipers>(args.data));
 		}
+	}
+
+	// pWWWa: mark damaged unit by pierce bullet
+	if (attack.damage_item && attack.damage_item->getRules()->getPierceType() && damage > 0)
+	{
+		_hitByPierce = true;
 	}
 
 	return damage;

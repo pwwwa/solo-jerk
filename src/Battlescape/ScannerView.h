@@ -22,7 +22,7 @@
 namespace OpenXcom
 {
 
-struct BattleAction;
+class BattleUnit;
 class Game;
 
 /**
@@ -31,13 +31,13 @@ class Game;
 class ScannerView : public InteractiveSurface
 {
 	Game * _game;
-	BattleAction* _action;
 	/// Handle clicking
 	void mouseClick (Action *action, State *state) override;
+	BattleUnit *_unit;
 	int _frame;
 public:
 	/// Create the ScannerView
-	ScannerView (int w, int h, int x, int y, Game *game, BattleAction *action);
+	ScannerView (int w, int h, int x, int y, Game * game, BattleUnit *unit);
 	/// Draw the scanner view
 	void draw() override;
 	void animate();

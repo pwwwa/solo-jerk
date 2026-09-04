@@ -143,4 +143,7 @@ ru:
   # Snanner
   scanRange: "Дальность сканирования"
   isScanAll: "Обнаруживать неподвижных"
+  # Floating unit Bobbing
+  STR_FLOAT_UNIT_BOBBING: "Покачивание парящих отрядов"  
+  STR_FLOAT_UNIT_BOBBING_DESC: "Каждый отряд будет влегка покачиваться в летающем/парящем состоянии."
   

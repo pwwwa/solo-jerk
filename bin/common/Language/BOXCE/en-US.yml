@@ -145,3 +145,6 @@ en-US:
   # Scanner
   scanRange: "Scanning range"
   isScanAll: "Detect static units"
+  # Floating unit Bobbing
+  STR_FLOAT_UNIT_BOBBING: "Bobbing of floating unit"  
+  STR_FLOAT_UNIT_BOBBING_DESC: "Each unit will bob slightly when in flying/floating state."  

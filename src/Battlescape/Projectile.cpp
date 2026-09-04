@@ -1078,7 +1078,7 @@ bool Projectile::move()
 		return !_save->getBattleGame()->getPiercePower() ||
 				_save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_EMPTY ||
 		      ( _save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_UNIT &&
-				_save->getTile(getPosition().toTile())->getOverlappingUnit(_save)->isOutThresholdExceed() );
+				_save->getTile(getPosition().toTile())->getOverlappingUnit(_save)->isPierced()/** / isOutThresholdExceed() /**/);
 	};
 
 	for ( int i = 0; i < _speed && (!isPierce || canPierce()); ++i )

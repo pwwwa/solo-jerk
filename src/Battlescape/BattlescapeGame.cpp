@@ -103,11 +103,11 @@ bool BattleActionCost::haveTU(std::string *message)
 	if (type == BA_AKIMBOSHOT && actor->isAkimbo())
 	{	// it allows to remove mass code usage checking for both weapons in hands at several places, but requires some 'hacky" adjustment for reserveTU checking
 		Time = std::max(actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Time, actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Time);
-		Energy = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Energy + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Energy;
-		Morale = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Morale + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Morale;
-		Health = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Health + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Health;
-		Stun = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Stun + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Stun;
-		Mana = actor->getActionTUs(BA_AKIMBOSHOT, actor->getLeftHandWeapon()).Mana + actor->getActionTUs(BA_AKIMBOSHOT, actor->getRightHandWeapon()).Mana;
+		Energy += actor->getActionTUs(BA_AKIMBOSHOT, actor->getOppositeHandWeapon()).Energy;
+		Morale += actor->getActionTUs(BA_AKIMBOSHOT, actor->getOppositeHandWeapon()).Morale;
+		Health += actor->getActionTUs(BA_AKIMBOSHOT, actor->getOppositeHandWeapon()).Health;
+		Stun   += actor->getActionTUs(BA_AKIMBOSHOT, actor->getOppositeHandWeapon()).Stun;
+		Mana   += actor->getActionTUs(BA_AKIMBOSHOT, actor->getOppositeHandWeapon()).Mana;
 	}
 
 	if (!skillRules && Time <= 0)
@@ -609,7 +609,7 @@ void BattlescapeGame::endTurn()
 				if (!tile && unit && item->getFuseTimer() != -1 && !_allEnemiesNeutralized)
 				{
 					int explodeAnyway = rule->getExplodeInventory(getMod());
-					if (explodeAnyway >= 2 || (explodeAnyway == 1 && item->getSlot()->getType() != INV_HAND))
+					if (explodeAnyway >= 2 || (explodeAnyway == 1 && item->getSlot() && item->getSlot()->getType() != INV_HAND))
 					{
 						tile = unit->getTile();
 					}
@@ -620,7 +620,7 @@ void BattlescapeGame::endTurn()
 					{
 						if (rule->getBattleType() == BT_GRENADE) // it's a grenade to explode now
 						{
-							Position p = tile->getPosition().toVoxel() + Position(8, 8, -tile->getTerrainLevel() + (unit ? unit->getHeight() / 2 : 0));
+							Position p = tile->getPosition().toVoxel() + Position(8, 8, -tile->getTerrainLevel(unit) + (unit ? unit->getHeight() / 2 : 0));
 							forRemoval.push_back(std::tuple(nullptr, new ExplosionBState(this, p, BattleActionAttack::GetBeforeShoot(BA_TRIGGER_TIMED_GRENADE, unit, item))));
 							exploded = true;
 						}

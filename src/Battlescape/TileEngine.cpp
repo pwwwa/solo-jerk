@@ -4911,7 +4911,7 @@ VoxelType TileEngine::calculateLineVoxel(Position origin, Position target, bool 
 VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, BattleUnit *excludeAllBut, bool onlyVisible)
 {
 	bool excludeAllUnits = _save->isBeforeGame() ? true : false; // don't start unit spotting before pre-game inventory stuff (large units on the craftInventory tile will cause a crash if they're "spotted")
-	int rand = (int)RNG::generate(0, 1) ? -1 : 1; // trajectory position shifter for avoiding of passing thru 2 walls corner 
+	int rand = (int)RNG::generate(0, 1) ? -1 : 1;				 // trajectory position shifter for avoiding of passing thru 2 walls corner 
 
 	calculateLineHelper(origin,target,
 		[&](Position point)
@@ -4944,7 +4944,7 @@ VoxelType TileEngine::calculatePierceLineVoxel(Position origin, Position target,
 			}
 			return false;
 		});
-	return V_OUTOFBOUNDS;
+	return voxelCheck(target, excludeUnit, excludeAllUnits, onlyVisible, excludeAllBut);
 }
 
 /**
@@ -5475,7 +5475,7 @@ int TileEngine::meleeAttackCalculate(BattleActionAttack::ReadOnly attack, const 
  */
 bool TileEngine::meleeAttack(BattleActionAttack attack, BattleUnit *victim, int terrainMeleeTilePart)
 {
-	if (terrainMeleeTilePart > 0 || _save->isAltPressed())
+	if (terrainMeleeTilePart > 0 || (terrainMeleeTilePart == 0 && _save->isAltPressed()) || attack.attacker == victim) // pWWWa: MeleeToFloor & TerrainMelee aim helper cases are included
 	{
 		// terrain melee doesn't miss
 		return true;
@@ -6178,7 +6178,8 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 			Position origin = tt->getSavedGame()->getTileEngine()->getSightOriginVoxel(aa->actor, tt);
 			Position target = tt->getPosition().toVoxel() + voxelTileCenter;
 
-			if (aa->actor->getDirection() % 2 && !tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, tp, &target, aa->actor, false))
+			if ( aa->actor->getDirection() % 2 && !( tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, tp, &target, aa->actor, false) |
+													 tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, O_FLOOR, &target, aa->actor, false) ) )
 			{ // is tile reachable (more predictable targeting queue at diagonals)
 				return false;
 			}

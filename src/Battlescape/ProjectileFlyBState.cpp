@@ -530,6 +530,11 @@ bool ProjectileFlyBState::createNewProjectile()
 		{
 			_parent->setPiercePower(_ammo->getRules()->getPiercePowerCap());
 		}
+
+		for (BattleUnit* bu : *_parent->getSave()->getUnits())
+		{
+			bu->setPiercedState(false);
+		}
 	}
 
 	// Special handling for "spray" auto attack, get target positions from the action's waypoints, starting from the back
@@ -721,12 +726,10 @@ void ProjectileFlyBState::deinit()
 void ProjectileFlyBState::think()
 {
 	/// checks if a weapon has any more shots to fire.
-	auto noMoreShotsToShoot = [this]()
-		{
-			return _action.type != BA_AKIMBOSHOT
-			   ? (!_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->getAmmoForAction(_action.type))
-			   : ( _action.actWeaponCounter >= _action.actWeaponShotQnty && _action.opWeaponCounter >= _action.opWeaponShotQnty);
-		};
+	auto noMoreShotsToShoot = [this]() {
+		 return _action.type != BA_AKIMBOSHOT
+			    ? (!_action.weapon->haveNextShotsForAction(_action.type, _action.autoShotCounter) || !_action.weapon->getAmmoForAction(_action.type))
+			    : ( _action.actWeaponCounter >= _action.actWeaponShotQnty && _action.opWeaponCounter >= _action.opWeaponShotQnty); };
 
 	_parent->getSave()->getBattleState()->clearMouseScrollingState();
 	/* TODO refactoring : store the projectile in this state, instead of getting it from the map each time? */
@@ -786,7 +789,7 @@ void ProjectileFlyBState::think()
 			auto dmgAOE = _ammo->getRules()->getPierceAOEDamageType();
 			auto dmgType = _ammo->getRules()->getDamageType()->isDirect() ? _ammo->getRules()->getDamageType() : _parent->getMod()->getDamageType(dmgAOE);
 
-			if (_projectileImpact >= V_FLOOR && _projectileImpact <= V_UNIT && !(_projectileImpact == V_UNIT && victim->isOutThresholdExceed()) && _parent->getPiercePower())
+			if (_projectileImpact >= V_FLOOR && _projectileImpact <= V_UNIT && !(_projectileImpact == V_UNIT && victim->isPierced() /** / isOutThresholdExceed() /**/) && _parent->getPiercePower())
 			{ // Projectile faces something "tasty" on their way. Let prepare to hit
 				int power = 0;
 				if (_action.weapon->getRules()->getIgnoreAmmoPower())

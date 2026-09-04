@@ -127,7 +127,7 @@ private:
 	int _kills;
 	int _faceDirection; // used only during strafing moves
 	std::vector<int> _meleeAttackedBy;
-	bool _hitByFire, _hitByAnything, _alreadyExploded;
+	bool _hitByFire, _hitByAnything, _alreadyExploded, _hitByPierce;
 	int _fireMaxHit;
 	int _smokeMaxHit;
 	int _moraleRestored;
@@ -982,6 +982,10 @@ public:
 	/// Remember whether it ran out of TUs while doing the reachability-check
 	void setRanOutOfTUs(bool ranOutOfTUs) { _ranOutOfTUs = ranOutOfTUs; }
 	bool getRanOutOfTUs() { return _ranOutOfTUs; }
+	/// Was this unit just hit by pierce type bullet
+	bool isPierced() const { return _hitByPierce; }
+	/// Set unit pierced state
+	bool setPiercedState(bool pierced = false) { return _hitByPierce = pierced; }
 
 	/// Multiplier of move cost.
 	ArmorMoveCost getMoveCostBase() const { return _moveCostBase; }
