@@ -136,13 +136,13 @@ OptionsAdvancedState::OptionsAdvancedState(OptionsOrigin origin) : OptionsBaseSt
 			{
 				_settingsBattle[optionInfo.owner()].push_back(optionInfo);
 			}
+			else if (optionInfo.category() == "STR_BATTLERA")
+			{
+				_settingsBattleRA[optionInfo.owner()].push_back(optionInfo);
+			}
 			else if (optionInfo.category() == "STR_AI")
 			{
 				_settingsAI[optionInfo.owner()].push_back(optionInfo);
-			}
-			else if (optionInfo.category() == "STR_RA")
-			{
-				_settingsRA[optionInfo.owner()].push_back(optionInfo);
 			}
 			else if (optionInfo.category() == "STR_AUTO")
 			{
@@ -237,6 +237,21 @@ void OptionsAdvancedState::updateList()
 		row += _settingsBattle[idx].size();
 		_offsetBattleMax = row;
 	}
+	if (_settingsBattleRA[idx].size() > 0)
+	{
+		if (row > -1)
+		{
+			_lstOptions->addRow(2, "", "");
+			row++;
+		}
+		_lstOptions->addRow(2, tr("STR_BATTLERA").c_str(), "");
+		row++;
+		_offsetBattleRAMin = row;
+		_lstOptions->setCellColor(_offsetBattleRAMin, 0, _colorGroup);
+		addSettings(_settingsBattleRA[idx]);
+		row += _settingsBattleRA[idx].size();
+		_offsetBattleRAMax = row;
+	}
 	if (_settingsAI[idx].size() > 0)
 	{
 		if (row > -1) { _lstOptions->addRow(2, "", ""); row++; }
@@ -247,17 +262,6 @@ void OptionsAdvancedState::updateList()
 		addSettings(_settingsAI[idx]);
 		row += _settingsAI[idx].size();
 		_offsetAIMax = row;
-	}
-	if (_settingsRA[idx].size() > 0)
-	{
-		if (row > -1) { _lstOptions->addRow(2, "", ""); row++; }
-		_lstOptions->addRow(2, tr("STR_RA").c_str(), "");
-		row++;
-		_offsetRAMin = row;
-		_lstOptions->setCellColor(_offsetRAMin, 0, _colorGroup);
-		addSettings(_settingsRA[idx]);
-		row += _settingsRA[idx].size();
-		_offsetRAMax = row;
 	}
 	if (_settingsAuto[idx].size() > 0)
 	{
@@ -336,10 +340,6 @@ OptionInfo *OptionsAdvancedState::getSetting(size_t sel)
 	else if (selInt > _offsetAIMin && selInt <= _offsetAIMax)
 	{
 		return &_settingsAI[idx][selInt - 1 - _offsetAIMin];
-	}
-	else if (selInt > _offsetRAMin && selInt <= _offsetRAMax)
-	{
-		return &_settingsRA[idx][selInt - 1 - _offsetRAMin];
 	}
 	else if (selInt > _offsetAutoMin && selInt <= _offsetAutoMax)
 	{

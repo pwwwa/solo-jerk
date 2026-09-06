@@ -375,6 +375,7 @@ void createOptionsOXCE()
 
 	// OXCE hidden but moddable
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceStartUpTextMode", &oxceStartUpTextMode, 0, "", "HIDDEN"));
+	_info.push_back(OptionInfo(OPTION_OXCE, "oxceMaximizeCutsceneScreens", &oxceMaximizeCutsceneScreens, true, "", "HIDDEN"));
 
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceGeoscapeDebugLogMaxEntries", &oxceGeoscapeDebugLogMaxEntries, 1000, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceGeoSlowdownFactor", &oxceGeoSlowdownFactor, 1, "", "HIDDEN"));
@@ -386,6 +387,7 @@ void createOptionsOXCE()
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceGeoSortCraftByDistanceToTarget", &oxceGeoSortCraftByDistanceToTarget, false, "", "HIDDEN"));
 
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceBaseInfoDefenseScaleMultiplier", &oxceBaseInfoDefenseScaleMultiplier, 100, "", "HIDDEN"));
+	_info.push_back(OptionInfo(OPTION_OXCE, "oxceBaseSoldierInfoColumnDefault", &oxceBaseSoldierInfoColumnDefault, 0, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceBaseSoldierTransformationShowOnlyEligible", &oxceBaseSoldierTransformationShowOnlyEligible, false, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceBaseFilterResearchable", &oxceBaseFilterResearchable, false, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceBaseResearchReorder", &oxceBaseResearchReorder, false, "", "HIDDEN"));
@@ -413,6 +415,7 @@ void createOptionsOXCE()
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceDisableInfoOnThrowCursor", &oxceDisableInfoOnThrowCursor, false, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceSwapDontReselectActions", &oxceSwapDontReselectActions, false, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceEnableUnitResponseSounds", &oxceEnableUnitResponseSounds, true, "", "HIDDEN"));
+	_info.push_back(OptionInfo(OPTION_OXCE, "oxceResetUnitResponseSoundsOnAvatarChange", &oxceResetUnitResponseSoundsOnAvatarChange, true, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceHiddenMovementBackgroundChangeFrequency", &oxceHiddenMovementBackgroundChangeFrequency, 1, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceInventoryShowUnitSlot", &oxceInventoryShowUnitSlot, false, "", "HIDDEN"));
 	_info.push_back(OptionInfo(OPTION_OXCE, "oxceReplaceNotesLink", &oxceReplaceNotesLink, false, "", "HIDDEN"));
@@ -603,14 +606,14 @@ void createAdvancedOptionsOTHER()
 	_info.push_back(OptionInfo(OPTION_OTHER, "instantPrime", &instantPrime, false, "STR_INSTANTPRIME", "STR_BATTLESCAPE"));
 	_info.push_back(OptionInfo(OPTION_OTHER, "preprimeGrenades", &preprimeGrenades, 1, "STR_PREPRIMEGRENADES", "STR_BATTLESCAPE"));
 
-	// OTHER Realistic Accuracy
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticAccuracy", &battleRealisticAccuracy, false, "STR_BATTLEREALISTICACCURACY", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedAimed", &battleRealisticImprovedAimed, true, "STR_BATTLEREALISTICIMPAIMED", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedLof", &battleRealisticImprovedLof, false, "STR_BATTLEREALISTICIMPLOF", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticShotDispersion", &battleRealisticShotDispersion, 1, "STR_BATTLEREALISTICSHOTDISPERSION", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticCoverEfficiency", &battleRealisticCoverEfficiency, 3, "STR_BATTLEREALISTICCOVEREFFICIENCY", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayRolls", &battleRealisticDisplayRolls, false, "STR_BATTLEREALISTICDISPLAYROLLS", "STR_RA"));
-	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayOthersRolls", &battleRealisticDisplayOthersRolls, false, "STR_BATTLEREALISTICDISPLAYOTHERSROLLS", "STR_RA"));
+	// OTHER options Realistic Accuracy
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticAccuracy", &battleRealisticAccuracy, false, "STR_BATTLEREALISTICACCURACY", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedAimed", &battleRealisticImprovedAimed, true, "STR_BATTLEREALISTICIMPAIMED", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticImprovedLof", &battleRealisticImprovedLof, false, "STR_BATTLEREALISTICIMPLOF", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticShotDispersion", &battleRealisticShotDispersion, 1, "STR_BATTLEREALISTICSHOTDISPERSION", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticCoverEfficiency", &battleRealisticCoverEfficiency, 3, "STR_BATTLEREALISTICCOVEREFFICIENCY", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayRolls", &battleRealisticDisplayRolls, false, "STR_BATTLEREALISTICDISPLAYROLLS", "STR_BATTLERA"));
+	_info.push_back(OptionInfo(OPTION_OTHER, "battleRealisticDisplayOthersRolls", &battleRealisticDisplayOthersRolls, false, "STR_BATTLEREALISTICDISPLAYOTHERSROLLS", "STR_BATTLERA"));
 
 	// OTHER options AI
 	_info.push_back(OptionInfo(OPTION_OTHER, "brutalAI", &brutalAI, 0, "STR_BRUTALAI", "STR_AI"));

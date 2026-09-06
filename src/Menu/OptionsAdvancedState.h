@@ -43,8 +43,8 @@ private:
 	std::vector<OptionInfo> _settingsGeo[OPTION_OWNER_MAX];
 	std::vector<OptionInfo> _settingsBase[OPTION_OWNER_MAX];
 	std::vector<OptionInfo> _settingsBattle[OPTION_OWNER_MAX];
+	std::vector<OptionInfo> _settingsBattleRA[OPTION_OWNER_MAX];
 	std::vector<OptionInfo> _settingsAI[OPTION_OWNER_MAX];
-	std::vector<OptionInfo> _settingsRA[OPTION_OWNER_MAX];
 	std::vector<OptionInfo> _settingsAuto[OPTION_OWNER_MAX];
 	int _offsetGeneralMin = -1;
 	int _offsetGeneralMax = -1;
@@ -54,10 +54,10 @@ private:
 	int _offsetBaseMax = -1;
 	int _offsetBattleMin = -1;
 	int _offsetBattleMax = -1;
+	int _offsetBattleRAMin = -1;
+	int _offsetBattleRAMax = -1;
 	int _offsetAIMin = -1;
 	int _offsetAIMax = -1;
-	int _offsetRAMin = -1;
-	int _offsetRAMax = -1;
 	int _offsetAutoMin = -1;
 	int _offsetAutoMax = -1;
 

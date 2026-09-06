@@ -982,7 +982,7 @@ BattleUnit *SavedBattleGame::selectPlayerUnit(int dir, bool checkReselect, bool 
 		// back to where we started... no more units found
 		if (*i == _selectedUnit)
 		{
-			if (checkReselect && _selectedUnit && !_selectedUnit->reselectAllowed())
+			if (checkReselect && !_selectedUnit->reselectAllowed())
 				_selectedUnit = 0;
 			return _selectedUnit;
 		}

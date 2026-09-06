@@ -97,6 +97,7 @@ private:
 	std::string _currentTooltip;
 	Position _cursorPosition;
 	Uint8 _barHealthColor;
+	int _autosave;
 	int _numberOfDirectlyVisibleUnits, _numberOfEnemiesTotal, _numberOfEnemiesTotalPlusWounded;
 	Uint8 _indicatorTextColor, _indicatorGreen, _indicatorBlue, _indicatorPurple;
 	int _numpadMoveDir;       // held numpad direction for continuous movement (-1 = none)
@@ -114,9 +115,7 @@ private:
 	void blinkHealthBar();
 	/// Shows the unit kneel state.
 	void toggleKneelButton(BattleUnit* unit);
-
-  public:
-	int _autosave;
+public:
 	/// Selects the next soldier.
 	void selectNextPlayerUnit(bool checkReselect = false, bool setReselect = false, bool checkInventory = false, bool checkFOV = true, bool byDistance = false);
 	/// Selects the previous soldier.

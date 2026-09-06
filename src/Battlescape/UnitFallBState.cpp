@@ -17,8 +17,8 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <algorithm>
 #include "UnitFallBState.h"
+#include <algorithm>
 #include "TileEngine.h"
 #include "Pathfinding.h"
 #include "../Savegame/BattleUnit.h"
