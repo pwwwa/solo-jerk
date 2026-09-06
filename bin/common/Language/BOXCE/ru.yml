@@ -145,5 +145,5 @@ ru:
   isScanAll: "Обнаруживать неподвижных"
   # Floating unit Bobbing
   STR_FLOAT_UNIT_BOBBING: "Покачивание парящих отрядов"  
-  STR_FLOAT_UNIT_BOBBING_DESC: "Каждый отряд будет влегка покачиваться в летающем/парящем состоянии."
+  STR_FLOAT_UNIT_BOBBING_DESC: "Каждый отряд будет cлегка покачиваться в летающем/парящем состоянии."
   

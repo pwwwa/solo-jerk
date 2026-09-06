@@ -136,25 +136,22 @@ void MeleeAttackBState::init()
 		throw Exception("This is a known (but tricky) bug... still fixing it, sorry. In the meantime, try save scumming option or kill all aliens in debug mode to finish the mission.");
 	}
 
-	int height = _target->getFloatHeight() + (_target->getHeight() / 2) - _parent->getSave()->getTile(_action.target)->getTerrainLevel(_target);
+	int height = _target->getFloatHeight() + (std::max(_target->getHeight() / 2, _target->getKneelHeight())) - _parent->getSave()->getTile(_action.target)->getTerrainLevel(_target);
 	_voxel = _action.target.toVoxel() + Position(8, 8, height);
 
 	/********************************\
 	* -=ForcedMeleeToFloor=- section *
 	\********************************/
 
-	// pWWWa: adjust height coordinates (todo: make more unified)
-	if (_parent->getSave()->isCtrlPressed(true) && _parent->getSave()->getSide() == FACTION_PLAYER && _unit->getFaction() == FACTION_PLAYER && !_unit->getTile()->hasNoFloor())
+	if (_target == _unit)
 	{
 		// Check presence of any alive unit under feet and apply their height (it is 0 usually, but let check)
 		if (_target->getTile()->getTopItem() && _target->getTile()->getTopItem()->getUnit() && _target->getTile()->getTopItem()->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
 		{ 
-			_target = _target->getTile()->getTopItem()->getUnit(); // could be abused for Extra XP gain, but why not ?
+			_target = _target->getTile()->getTopItem()->getUnit(); // could be abused for Extra XP gain, but why not ? todo: But damageUnit script still returns Attacker == Victim
 			_voxel.z = _target->getPosition().toVoxel().z;
 		}
-		else if (Mod::EXTENDED_TERRAIN_MELEE <= 0 ||
-			     _action.weapon &&
-			    (!_action.weapon->getRules()->getDamageType()->ToTile || !_action.weapon->getRules()->getMeleeType()->ToTile))
+		else if (Mod::EXTENDED_TERRAIN_MELEE <= 0 || (!_action.weapon->getRules()->getDamageType()->ToTile || !_action.weapon->getRules()->getMeleeType()->ToTile))
 		{
 			// Do not allow to dig terrain without activated Terrain Melee feature or for not suitable items for this
 			_action.result = "STR_THERE_IS_NO_ONE_THERE";
@@ -247,7 +244,7 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 
 	if (_target && _target != _unit)
 	{
-		// pWWWa: Miss to target, really ? Recheck tile's vertical axis and find any high victim's piece.
+		// pWWWa: Missed to unit, really ? Recheck tile's vertical axis and find any high victim's piece.
 		if (_parent->getTileEngine()->voxelCheck(_voxel, _unit) != V_UNIT)
 		{
 			for (int z = 24; z >= 0; --z)
@@ -259,7 +256,6 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 				}
 			}
 		}
-
 		// Offset the damage voxel to attacker's direction, so that the target knows which side the attack came from
 		const int attackerHeight = -_parent->getSave()->getTile(_unit->getPosition())->getTerrainLevel(_unit) + _unit->getHeight() / 2;
 		const Position attackerPos = _unit->getPositionVexels() + Position(0, 0, attackerHeight);

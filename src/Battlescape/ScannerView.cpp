@@ -52,7 +52,6 @@ void ScannerView::draw()
 {
 	SurfaceSet *set = _game->getMod()->getSurfaceSet("DETBLOB.DAT");
 	Surface *surface = 0;
-
 	
 	const BattleItem* scanner = _game->getSavedGame()->getSavedBattle()->getBattleGame()->getCurrentAction()->weapon; //_unit->getUtilityWeapon(BT_SCANNER); //_unit->getActiveHand(_unit->getLeftHandWeapon(), _unit->getRightHandWeapon());
 	const int scanRad    = scanner ? scanner->getRules()->getScanRange() : 9;

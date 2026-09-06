@@ -517,7 +517,7 @@ bool ProjectileFlyBState::createNewProjectile()
 		}
 	}
 
-	// pierceType power (capacity) redefining;
+	// pWWWa: pierceType power (capacity) redefining;
 	if (_ammo && _ammo->getRules()->getPierceType() && !(_action.type == BA_LAUNCH && _action.actor->getPosition() != _origin))
 	{
 		if (!_ammo->getRules()->getPiercePowerCap())
@@ -532,7 +532,7 @@ bool ProjectileFlyBState::createNewProjectile()
 		}
 
 		for (BattleUnit* bu : *_parent->getSave()->getUnits())
-		{
+		{ // refresh pierced mark for units
 			bu->setPiercedState(false);
 		}
 	}
@@ -778,7 +778,7 @@ void ProjectileFlyBState::think()
 	{
 		auto attack = BattleActionAttack::GetAferShoot(_action, _ammo);
 
-		// Pierce bullet handling injection (dirty hack)
+		// pWWWa: Pierce bullet handling injection (dirty hack. Possible todo: transfer it to Projectile::move())
 		if (_ammo && _ammo->getRules()->getPierceType() && !_ammo->getRules()->getShotgunPellets() && _parent->getMap()->getProjectile())
 		{
 			Projectile* bullet = _parent->getMap()->getProjectile();
@@ -860,10 +860,10 @@ void ProjectileFlyBState::think()
 			   ( _ammo->getRules()->isOutOfRange(_action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile())) ) ||
 			   ( _action.type == BA_LAUNCH && _action.waypoints.size() == 1 &&
 				 _action.actor->distance3dToPositionSq(_parent->getMap()->getProjectile()->getPosition().toTile()) > _action.actor->distance3dToPositionSq(_action.target) ) )
-			{ // Projectile has special maxRange event property, when reached restricted range or last guided waypoint, let handle it
+			{ // Projectile has special -=maxRange event=- property, when reached restricted range or last guided waypoint, let handle it
 				switch (_ammo->getRules()->getMaxRangeEvent())
 				{
-					case 1:	_projectileImpact = V_EMPTY; break; // generate explosion
+					case 1:	_projectileImpact = V_EMPTY; break; // generate hit/explosion
 					case 2:	_projectileImpact = V_OUTOFBOUNDS;  // vanish
 				}
 			}

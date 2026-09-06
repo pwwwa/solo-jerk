@@ -37,7 +37,7 @@ class ProjectileFlyBState : public BattleState
 private:
 	BattleUnit *_unit;
 	BattleItem *_ammo;
-	BattleItem *_ammoOp = nullptr;
+	BattleItem *_ammoOp;
 	Position _origin, _targetVoxel, _originVoxel;
 	int _projectileImpact;
 	int _range;

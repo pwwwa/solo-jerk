@@ -1073,7 +1073,7 @@ bool Projectile::move()
 
 	const bool isPierce = _ammo && _ammo->getRules()->getPierceType() && !_ammo->getRules()->getShotgunPellets();
 	const bool isRangeEvent = _ammo && _ammo->getRules()->getMaxRangeEvent();
-	auto canPierce = [this]()->bool
+	auto canFly = [&]()
 	{
 		return !_save->getBattleGame()->getPiercePower() ||
 				_save->getTileEngine()->voxelCheck(getPosition(), _action.actor) == V_EMPTY ||
@@ -1081,7 +1081,7 @@ bool Projectile::move()
 				_save->getTile(getPosition().toTile())->getOverlappingUnit(_save)->isPierced()/** / isOutThresholdExceed() /**/);
 	};
 
-	for ( int i = 0; i < _speed && (!isPierce || canPierce()); ++i )
+	for ( int i = 0; i < _speed && (!isPierce || canFly()); ++i )
 	{
 		_position++;
 		if ( _position == _trajectory.size() || isPierce &&

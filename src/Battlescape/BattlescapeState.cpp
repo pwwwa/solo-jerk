@@ -158,8 +158,8 @@ BattlescapeState::BattlescapeState() :
 	_btnHelp = new BattlescapeButton(32, 16, x + 208, y + 16);
 	_btnEndTurn = new BattlescapeButton(32, 16, x + 240, y);
 	_btnAbort = new BattlescapeButton(32, 16, x + 240, y + 16);
-	_btnStats = new InteractiveSurface(Options::akimboMod > 1 ? 132 : 164, 23, x + 107, y + 33);
-	_btnReserveAkimbo = new BattlescapeButton(22, 8, x + 245, y + 33); // Akimbo reserve button under abort mission
+	_btnStats = new InteractiveSurface(Options::akimboMod > 1 ? 132 : 164, 23, x + 107, y + 33); // pWWWa: borrow some space for akimbo reserve button
+	_btnReserveAkimbo = new BattlescapeButton(22, 8, x + 245, y + 33); // pWWWa: place akimbo reserve button under abort mission button
 	_btnReserveNone = new BattlescapeButton(17, 11, x + 60, y + 33);
 	_btnReserveSnap = new BattlescapeButton(17, 11, x + 78, y + 33);
 	_btnReserveAimed = new BattlescapeButton(17, 11, x + 60, y + 45);

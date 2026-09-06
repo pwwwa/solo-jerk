@@ -3232,8 +3232,8 @@ TileEngine::ReactionScore TileEngine::determineReactionType(BattleUnit *unit, Ba
 			}
 		}
 		if (unit->isAkimbo() &&
-			unit->getLeftHandWeapon()->getRules()->getConfigAkimbo()->shots < 2 &&
-			unit->getRightHandWeapon()->getRules()->getConfigAkimbo()->shots < 2 &&
+			unit->getLeftHandWeapon()->getRules()->getConfigAkimbo()->shots <= unit->getLeftHandWeapon()->getRules()->getConfigSnap()->shots &&
+			unit->getRightHandWeapon()->getRules()->getConfigAkimbo()->shots <= unit->getRightHandWeapon()->getRules()->getConfigSnap()->shots &&
 			_save->canUseWeapon(unit->getLeftHandWeapon(), unit, false, BA_AKIMBOSHOT) &&
 			_save->canUseWeapon(unit->getRightHandWeapon(), unit, false, BA_AKIMBOSHOT) )
 		{
@@ -6178,7 +6178,7 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 			Position origin = tt->getSavedGame()->getTileEngine()->getSightOriginVoxel(aa->actor, tt);
 			Position target = tt->getPosition().toVoxel() + voxelTileCenter;
 
-			if ( aa->actor->getDirection() % 2 && !( tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, tp, &target, aa->actor, false) |
+			if ( aa->actor->getDirection() % 2 && !( tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, tp, &target, aa->actor, false) ||
 													 tt->getSavedGame()->getTileEngine()->canTargetTile(&origin, tt, O_FLOOR, &target, aa->actor, false) ) )
 			{ // is tile reachable (more predictable targeting queue at diagonals)
 				return false;

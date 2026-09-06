@@ -734,7 +734,7 @@ void Map::drawUnit(UnitSprite &unitSprite, Tile *unitTile, Tile *currTile, Posit
 	{
 		shade = std::min(+NIGHT_VISION_SHADE, shade);
 	}
-	unitSprite.draw(bu, part, tileScreenPosition.x + offsets.ScreenOffset.x, tileScreenPosition.y + offsets.ScreenOffset.y + ( Options::floatUnitBobbing & bu->isFloating() ? getArrowBobForFrame(_animFrame * ( bu->getId() % 2 ? 0.5 : 0.45 )) : 0 ), shade, mask, _isAltPressed && !_isCtrlPressed);
+	unitSprite.draw(bu, part, tileScreenPosition.x + offsets.ScreenOffset.x, tileScreenPosition.y + offsets.ScreenOffset.y + ( Options::floatUnitBobbing && bu->isFloating() ? getArrowBobForFrame(_animFrame * ( bu->getId() % 2 ? 0.5 : 0.45 )) : 0 ), shade, mask, _isAltPressed && !_isCtrlPressed);
 }
 
 /**
