@@ -965,6 +965,7 @@ void ProjectileFlyBState::think()
 						int choke = _action.weapon->getRules()->getShotgunChoke();
 						Position firstPelletImpact = _parent->getMap()->getProjectile()->getPosition(-2);
 						Position originalTarget = _targetVoxel;
+						_parent->setStateInterval(BattlescapeState::DEFAULT_ANIM_SPEED / 2); // pWWWa: restore animation speed due possible ExplosionBS init phase passing
 						
 						for (int i = 1; i < _ammo->getRules()->getShotgunPellets(); ++i)
 						{

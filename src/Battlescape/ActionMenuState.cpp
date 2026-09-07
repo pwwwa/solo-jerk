@@ -505,7 +505,6 @@ void ActionMenuState::handleAction()
 			}
 			else if (_game->isCtrlPressed(true) && _game->getSavedGame()->getSavedBattle()->getSide() == FACTION_PLAYER && _action->actor->getFaction() == FACTION_PLAYER && !_action->actor->getTile()->hasNoFloor())
 			{ // ForcedMelleeToFloor: Let pass target tile coordinates directly to MeleeAttackBState
-				_action->target = _action->actor->getPosition();
 
 				if (_action->actor->isBigUnit())
 				{ // big unit aim tile by their part in dependence of their facing direction
@@ -516,6 +515,7 @@ void ActionMenuState::handleAction()
 					case 5:	case 6:	_action->target = _action->actor->getPosition() + Position(0, 1, 0); break; // SW & W -> 4rd part
 					}
 				}
+				else _action->target = _action->actor->getPosition();
 			}
 			else if (!_game->getSavedGame()->getSavedBattle()->getTileEngine()->validMeleeRange(
 				_action->actor->getPosition(),

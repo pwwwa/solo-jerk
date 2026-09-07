@@ -5476,7 +5476,7 @@ int TileEngine::meleeAttackCalculate(BattleActionAttack::ReadOnly attack, const 
  */
 bool TileEngine::meleeAttack(BattleActionAttack attack, BattleUnit *victim, int terrainMeleeTilePart)
 {
-	if (terrainMeleeTilePart > 0 || (terrainMeleeTilePart == 0 && _save->isAltPressed()) || attack.attacker == victim) // pWWWa: MeleeToFloor & TerrainMelee aim helper cases are included
+	if (terrainMeleeTilePart > 0 || attack.attacker == victim) // pWWWa: MeleeToFloor helper cases are included
 	{
 		// terrain melee doesn't miss
 		return true;
@@ -6239,7 +6239,7 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 		case 0: // North
 				if (setTarget(originTile, O_NORTHWALL, action)		  ||
 					setTarget(originTile2, O_NORTHWALL, action)		  ||
-					setTarget(neighbouringTile2, O_WESTWALL, action) && size)
+					setTarget(neighbouringTile2, O_WESTWALL, action) && size)   // parallel wall between 2 parts of big unit
 				return true;
 				break;
 
@@ -6271,7 +6271,7 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 					setTarget(neighbouringTile3, O_WESTWALL, action))		// 2
 				return true;
 				break;
-				
+
 		case 3: // South-East 
 				if (setTarget(neighbouringTile, O_WESTWALL, action)   ||    // 3
 					setTarget(neighbouringTile, O_NORTHWALL, action)  ||    // 4
@@ -6279,7 +6279,7 @@ bool TileEngine::validTerrainMeleeRange(BattleAction* action)
 					setTarget(neighbouringTile2, O_WESTWALL, action))		// 2
 				return true;
 				break;
-				
+
 		case 5: // North-East
 				if (setTarget(neighbouringTile, O_NORTHWALL, action)  ||	// 4
 					setTarget(neighbouringTile2, O_NORTHWALL, action) ||    // 1

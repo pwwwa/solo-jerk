@@ -122,7 +122,7 @@ Map::Map(Game *game, int width, int height, int x, int y, int visibleMapHeight) 
 			}
 		}
 	}
-
+	_oxceFOWColor = Options::oxceFOWColor == 1 && _isTFTD ? 13 : Options::oxceFOWColor; // pWWWa: 1 is default and unified, which defines "silver gray" color for UFO and TFTD 
 	_iconHeight = _game->getMod()->getInterface("battlescape")->getElement("icons")->h;
 	_iconWidth = _game->getMod()->getInterface("battlescape")->getElement("icons")->w;
 	_messageColor = _game->getMod()->getInterface("battlescape")->getElement("messageWindows")->color;
@@ -734,7 +734,11 @@ void Map::drawUnit(UnitSprite &unitSprite, Tile *unitTile, Tile *currTile, Posit
 	{
 		shade = std::min(+NIGHT_VISION_SHADE, shade);
 	}
-	unitSprite.draw(bu, part, tileScreenPosition.x + offsets.ScreenOffset.x, tileScreenPosition.y + offsets.ScreenOffset.y + ( Options::floatUnitBobbing && bu->isFloating() ? getArrowBobForFrame(_animFrame * ( bu->getId() % 2 ? 0.5 : 0.45 )) : 0 ), shade, mask, _isAltPressed && !_isCtrlPressed);
+	if (Options::floatUnitBobbing && bu->isFloating())
+	{
+		offsets.ScreenOffset.y += getArrowBobForFrame(_animFrame * (bu->getId() % 2 ? 0.5 : 0.45) ); // bu->getId() % 2 ? (bu->getId() % 3 ? 0.5 : 0.45) : (!(bu->getId() % 4) ? 0.40 : 0.35);
+	}
+	unitSprite.draw(bu, part, tileScreenPosition.x + offsets.ScreenOffset.x, tileScreenPosition.y + offsets.ScreenOffset.y, shade, mask, _isAltPressed && !_isCtrlPressed);
 }
 
 /**
@@ -962,7 +966,7 @@ void Map::drawTerrain(Surface *surface)
 						else if (tile->isDiscovered(O_FLOOR))
 						{
 							tileShade = reShade(tile) + oxceFOWshade; // make non visible tiles darker
-							_nvColor = Options::oxceFOWColor == 1 && _isTFTD ? 13 : Options::oxceFOWColor; // set FOW color. pWWWa: define 1 color as metallic grey for UFO and TFTD
+							_nvColor = _oxceFOWColor;                 // set FOW color.
 							if (tileShade > 15)
 								tileShade = 15;
 							obstacleShade = tileShade;
@@ -1995,7 +1999,7 @@ void Map::drawTerrain(Surface *surface)
 		}
 		if (this->getCursorType() != CT_NONE)
 		{
-			const int arrowColor = _isTFTD ? 6 : 5;
+			const int arrowColor = _isTFTD ? 6 : 5; // unit selector arrow alt color (green)
 			_arrow->blitNShade(surface, screenPosition.x + offset.x + (_spriteWidth / 2) - (_arrow->getWidth() / 2), screenPosition.y + offset.y - _arrow->getHeight() + getArrowBobForFrame(_animFrame), getArrowBobForFrame(_animFrame), false, arrowColor);
 		}
 	}
@@ -2051,8 +2055,8 @@ void Map::drawTerrain(Surface *surface)
 						offset.y -= 2;
 					}
 
-					const int arrowShade = getArrowBobForFrame(_animFrame) + (myUnit->getPosition().z == _camera->getViewLevel() ? 0 : 6);
-					const int arrowColor = _isTFTD ? 12 : 3; //pWWWa: red for EU & TFTD
+					const Sint8 arrowShade = getArrowBobForFrame(_animFrame) + (myUnit->getPosition().z == _camera->getViewLevel() ? 0 : 6);
+					const Sint8 arrowColor = _isTFTD ? 12 : 3; //pWWWa: red for EU & TFTD
 
 					_arrow->blitNShade(
 						surface,

@@ -88,6 +88,12 @@ void ExplosionBState::init()
 	bool miss = false;
 	if (_attack.damage_item)
 	{
+
+		if (_attack.damage_item->getRules()->getShotgunPellets() && _parent->getTileEngine()->voxelCheck(_center, _attack.attacker) == V_OUTOFBOUNDS)
+		{	// pWWWa: shotgun primal pellet hit V_OUTOFBOUNDS, let pass that "DisneyLand" routine and use think() function
+			return;
+		}
+
 		itemRule = _attack.damage_item->getRules();
 		type = itemRule->getBattleType();
 
@@ -157,6 +163,10 @@ void ExplosionBState::init()
 				_power = 0;
 				miss = true;
 			}
+			if (_terrainMeleeTilePart == 4)
+			{ // Terrain melee floor aiming helper trick: Do not allow to miss terrain and make TileEngine::hit() function recheck impact position
+				_terrainMeleeTilePart = 0;
+			}  
 		}
 		else if (type == BT_FIREARM)
 		{
@@ -203,12 +213,6 @@ void ExplosionBState::init()
 
 
 	bool range = !(_hit || (_attack.weapon_item && _attack.weapon_item->getRules()->getBattleType() == BT_PSIAMP));
-
-	if (_attack.damage_item && _attack.damage_item->getRules()->getShotgunPellets() && _parent->getTileEngine()->voxelCheck(_center, _attack.attacker) == V_OUTOFBOUNDS)
-	{
-		_parent->setStateInterval(std::max(1, BattlescapeState::DEFAULT_ANIM_SPEED / 2));
-		goto voidHitEvent;
-	}
 
 	if (_areaOfEffect)
 	{
@@ -371,8 +375,6 @@ void ExplosionBState::init()
 		// bullet hit sound
 		_parent->playSound(sound, _center.toTile());
 	}
-
-	voidHitEvent:
 
 	if (_attack.type == BA_SELF_DESTRUCT)
 	{

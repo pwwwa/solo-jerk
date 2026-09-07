@@ -155,7 +155,7 @@ void MeleeAttackBState::init()
 		{
 			// Do not allow to dig terrain without activated Terrain Melee feature or for not suitable items for this
 			_action.result = "STR_THERE_IS_NO_ONE_THERE";
-			_parent->getCurrentAction()->type = BA_NONE; // stucking cursor fix, hello to BattleScapeGame
+			_parent->getCurrentAction()->type = BA_NONE; // stucking cursor fix, hello to BattlescapeGame
 			_parent->popState();
 			return;
 		}
@@ -275,7 +275,7 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 	}
 	else if (_target == _unit || terrainMeleeTilePart == 4)
 	{
-		// pWWWa: handling for miss during hitting of floor terrain attempt
+		// pWWWa: handling of miss during of hitting some floor terrain
 		while (_voxel.z > _action.target.toVoxel().z && _parent->getTileEngine()->voxelCheck(_voxel, _unit) == V_EMPTY)
 		{
 			--_voxel.z;
@@ -283,7 +283,7 @@ void MeleeAttackBState::performMeleeAttack(int terrainMeleeTilePart)
 	}
 
 	// make an explosion action
-	_parent->statePushFront(new ExplosionBState(_parent, _voxel, BattleActionAttack::GetAferShoot(_action, _ammo), 0, true, 0, 0, terrainMeleeTilePart < 4 ? terrainMeleeTilePart : 0));
+	_parent->statePushFront(new ExplosionBState(_parent, _voxel, BattleActionAttack::GetAferShoot(_action, _ammo), 0, true, 0, 0, terrainMeleeTilePart));
 
 
 	_reaction = true;
